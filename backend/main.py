@@ -1,0 +1,14 @@
+from flask import Flask,request,jsonify
+from face_ai import calculate_score
+
+app = Flask(__name__)
+
+@app.route('/upload',methods=['POST'])
+def upload():
+    photo =request.files['photo']
+    user_id=request.form['user_id']
+    # 待补充
+    score=80.0
+    return jsonify({"score": score})
+if __name__ == '__main__':
+    app.run(debug=True)
