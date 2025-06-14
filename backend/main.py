@@ -1,8 +1,6 @@
 # 该文件给前端提供接口
 
-
 from flask import Flask,request,jsonify
-from face_ai import calculate_score
 
 app = Flask(__name__)
 
