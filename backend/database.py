@@ -43,7 +43,7 @@ def init_database():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS image(
         id INTEGER PRIMARY KEY AUTOINCREMENT,   -- 图片ID
-        data BLOB,                              -- 图片数据
+        model_train_data BLOB,                              -- 图片数据
         score INTEGER,                          -- 图片颜值
         sex TEXT,                               -- 性别
         age TEXT,                               -- 年龄段
@@ -62,6 +62,15 @@ def init_database():
     );
     ''')
 
+    # 创建Pk记录表
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS pk_record(
+        id ,
+        user_a_id ,
+        user_b_id ,
+    );
+    ''')
+
     # 提交操作并关闭连接
     conn.commit()
     conn.close()
@@ -75,29 +84,4 @@ def check_database():
     conn.close()
     logging.info("数据库中的表：%s",tables)
     return
-
-def write_user(user_info):
-    user_id=0
-    return user_id
-def read_user(user_id):
-    user_info=jsonify({"id":user_id})
-    return user_info
-def write_post(post_info):
-    post_id=0
-    return post_id
-def read_post(post_id):
-    post_info=jsonify({"id":post_id})
-    return post_info
-def write_image(image_info):
-    image_id=0
-    return image_id
-def read_image(image_id):
-    image_info=jsonify({"id":image_id})
-    return image_info
-def write_comment(comment_info):
-    comment_id=0
-    return comment_id
-def read_comment(comment_id):
-    comment_info=jsonify({"id":comment_id})
-    return comment_info
 

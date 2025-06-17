@@ -16,7 +16,7 @@ for page in range(1,11):
     # print(number,"   ")
     # print(json_data,"\n")
 
-    data_list = json_data['data']
+    data_list = json_data['model_train_data']
 
     for data in data_list:
         images = data[7]
