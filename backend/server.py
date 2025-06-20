@@ -1,20 +1,30 @@
-# 该文件给前端提供接口
-
-from flask import Flask,request,jsonify
-from sympy import false
-
-from database import init_database,check_database
+import os
+import tempfile
+from flask import Flask, request, jsonify
+from models.train_scripts.beauty_scoring_pipeline import get_model, get_score
+from pathlib import Path
 
 app = Flask(__name__)
-init_database() # 初始化数据库
-check_database() # 检查数据库是否存在（调试用，正式版可删掉）
+pipeline = get_model()
 
-@app.route('/upload',methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload():
-    photo =request.files['photo']
-    user_id=request.form['user_id']
-    # 待补充
-    score=80.0
+    # 获取图片文件
+    photo = request.files['photo']
+    user_id = request.form['user_id']
+
+    # 将图片保存到临时文件夹
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
+    photo.save(temp_file.name)
+    # 获取分数
+    try:
+        img_path=temp_file.name
+        score = get_score(pipeline,img_path)
+    finally:
+        temp_file.close()
+        os.remove(temp_file.name)
     return jsonify({"score": score})
+
+
 if __name__ == '__main__':
-    app.run(debug=false)
+    app.run(debug=False)
