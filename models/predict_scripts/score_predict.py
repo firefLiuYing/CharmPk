@@ -92,7 +92,7 @@ class BeautyScoringPipeline:
         plt.title(f'Predicted Beauty Score: {score:.2f}/5.00', fontsize=14)
         plt.axis('off')
 
-        output_dir = "../train_scripts/output_results"
+        output_dir = "output_results"
         os.makedirs(output_dir, exist_ok=True)
         output_path = os.path.join(output_dir, os.path.basename(image_path))
         plt.savefig(output_path, bbox_inches='tight', dpi=100)
@@ -103,7 +103,7 @@ class BeautyScoringPipeline:
 def main():
     print("人脸颜值评分系统已加载")
     # 初始化管道
-    model_path = "../score_model.pth"
+    model_path = "D:\\UserResource\\Code\\CharmPk\\models\\score_model.pth"
     if not os.path.exists(model_path):
         print(f"错误: 模型文件 {model_path} 不存在")
         return
@@ -171,7 +171,7 @@ def initialize():
     plt.switch_backend('Agg')
 def get_model():
     initialize()
-    model_path = "/models/score_model.pth"
+    model_path = "D:\\UserResource\\Code\\CharmPk\\models\\score_model.pth"
     if not os.path.exists(model_path):
         return f"错误: 模型文件 {model_path} 不存在"
     try:
@@ -182,7 +182,8 @@ def get_model():
 def get_score(pipeline,img_path):
     if not os.path.exists(img_path):
         return "文件路径不存在"
-    result = pipeline.predict_and_visualize(img_path)
+    result = pipeline.predict(img_path)
+    result*=20
     return result
 if __name__ == '__main__':
     initialize()
