@@ -240,7 +240,7 @@ def main():
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': val_loss,
-            }, 'best_model.pth')
+            }, '../score_model.pth')
 
         # 早停检查
         early_stopping(val_loss)

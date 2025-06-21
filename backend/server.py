@@ -1,8 +1,7 @@
 import os
 import tempfile
 from flask import Flask, request, jsonify
-from models.train_scripts.beauty_scoring_pipeline import get_model, get_score
-from pathlib import Path
+from models.predict_scripts.score_predict import get_model, get_score
 
 app = Flask(__name__)
 pipeline = get_model()
