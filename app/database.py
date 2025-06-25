@@ -1,72 +1,90 @@
 from app import db
-from app.models import User, Photo, Friend, Post, Comment, Like, PkResult
-from flask_bcrypt import Bcrypt
 
-bcrypt = Bcrypt()
+# 用户模型
+class User(db.Model):
+    """自身基本属性"""
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    nickname = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
-# 创建用户
-def create_user(username, password, email=None):
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(username=username, password=hashed_password, email=email)
-    db.session.add(new_user)
-    db.session.commit()
-    return new_user
+    """关联的属性"""
+    posts = db.relationship('Post', backref='author', lazy=True)
+    def __repr__(self):
+        return f'<User {self.username}>'
 
-# 获取用户通过用户名
-def get_user_by_username(username):
-    return User.query.filter_by(username=username).first()
+# 照片模型
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    image_url = db.Column(db.String(255), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    def __repr__(self):
+        return f'<Photo {self.id}>'
 
-# 获取用户通过uid
-def get_user_by_uid(uid):
-    return User.query.filter_by(uid=uid).first()
+class Friendship(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id_2 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-# 创建好友请求
-def create_friend_request(uid1, uid2):
-    friend_request = Friend(uid1=uid1, uid2=uid2, status='pending')
-    db.session.add(friend_request)
-    db.session.commit()
-    return friend_request
+    user_1 = db.relationship('User', foreign_keys=[user_id_1])
+    user_2 = db.relationship('User', foreign_keys=[user_id_2])
 
-# 接受好友请求
-def accept_friend_request(friend_id):
-    friend = Friend.query.get(friend_id)
-    if friend:
-        friend.status = 'accepted'
-        db.session.commit()
-        return friend
-    return None
+    def __repr__(self):
+        return f'<Friendship {self.user_1.username} <-> {self.user_2.username}>'
 
-# 创建帖子
-def create_post(uid, content):
-    new_post = Post(uid=uid, content=content)
-    db.session.add(new_post)
-    db.session.commit()
-    return new_post
+# 帖子模型
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
-# 创建评论
-def create_comment(post_id, uid, content):
-    new_comment = Comment(post_id=post_id, uid=uid, content=content)
-    db.session.add(new_comment)
-    db.session.commit()
-    return new_comment
+    comments = db.relationship('Comment', backref='post', lazy=True)
 
-# 点赞操作
-def like_post_or_comment(user_id, post_id=None, comment_id=None):
-    like = Like(user_id=user_id, post_id=post_id, comment_id=comment_id)
-    db.session.add(like)
-    db.session.commit()
-    return like
+    def __repr__(self):
+        return f'<Post {self.id}>'
 
-# 上传照片
-def add_photo(uid, image_url, score):
-    new_photo = Photo(uid=uid, image_url=image_url, score=score)
-    db.session.add(new_photo)
-    db.session.commit()
-    return new_photo
+# 评论模型
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-# 创建PK对战记录
-def create_pk_result(uid1, uid2, winner_uid, score1, score2):
-    pk_result = PkResult(uid1=uid1, uid2=uid2, winner_uid=winner_uid, score1=score1, score2=score2)
-    db.session.add(pk_result)
-    db.session.commit()
-    return pk_result
+    replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]))
+
+    def __repr__(self):
+        return f'<Comment {self.id}>'
+
+# 点赞模型
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    target_type = db.Column(db.String(50), nullable=False)
+    target_id = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    def __repr__(self):
+        return f'<Like {self.user_id} liked {self.target_type} {self.target_id}>'
+
+# PK对战结果模型
+class PkResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id_2 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    def __repr__(self):
+        return f'<PkResult {self.user_id_1} vs {self.user_id_2}>'
+

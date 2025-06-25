@@ -1,14 +1,22 @@
 # app/server.py
-from flask import Flask
+from flask import Flask,request
 from app.database import db
+from app import app
+from sqlalchemy import inspect
 
-# 创建 Flask 应用对象
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)  # 初始化数据库
+with app.app_context():
+    db.create_all()
+    inspector=inspect(db.engine)
+    tables=inspector.get_table_names()
+    print("数据库中的表有：",tables)
 
-# 定义一些路由（视图函数）
 @app.route('/hello',methods=['GET'])
 def home():
     return 'Hello, World!'
+
+@app.route('/register',methods=['POST'])
+def register():
+    data=request.json
+    user_name=data.get('username')
+    password=data.get('password')
+
