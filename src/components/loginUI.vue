@@ -13,7 +13,7 @@
       </div>
 
       <div class="link">
-        <a @click = "changePage()">没有账号？点此注册</a>
+        <a @click = "changePageToRegister()">没有账号？点此注册</a>
       </div>
 
       <button type="submit">登录</button>
@@ -34,15 +34,20 @@ function handleLogin() {
   console.log('Logging in with', username.value, password.value);
   // 清空输入
   //在这里之后增加向数据库发送请求和接受返回值
+   changePageToHome()
   username.value = '';
   password.value = '';
-  changePage()
 }
 const emit = defineEmits(['changePage']);
 
-function changePage() {
-  emit('updateParent','register'); // 发送事件和新值
+function changePageToRegister() {
+  emit('updateLogin','register'); // 发送事件和新值
 }
+
+function changePageToHome() {
+  emit('updateLogin','home'); // 发送事件和新值
+}
+
 </script>
 
 <style scoped>

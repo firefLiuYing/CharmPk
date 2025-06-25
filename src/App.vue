@@ -1,6 +1,7 @@
 <script>
 import loginUI from "./components/loginUI.vue"
 import registerUI from "./components/registerUI.vue"
+import HomePage from "./components/homePage.vue";
 
 export default {
   name: 'App',
@@ -14,6 +15,7 @@ export default {
   components: {
     loginUI,
     registerUI,
+    Home: HomePage,
   },
 
   methods: {
@@ -26,12 +28,13 @@ export default {
 </script>
 
 <template>
-    <div class = "image-container">
+    <div class = "image-container" v-if = "this.pageName !== 'home'">
     <img src="./assets/logo.png" alt="Vue Logo">
     </div>
-    <p>Parent Variable: {{ pageName }}</p>
-    <loginUI @updateParent = "updatePageName" v-if =  "this.pageName === 'login'"></loginUI>
-    <registerUI v-if =  "this.pageName === 'register'"/>
+    <!--<p>Parent Variable: {{ pageName }}</p>-->
+    <loginUI @updateLogin = "updatePageName"   v-if =  "this.pageName === 'login'"></loginUI>
+    <registerUI @updateRegister = "updatePageName" v-if =  "this.pageName === 'register'"/>
+    <Home v-if = "this.pageName === 'home'"/>
 
 </template>
 

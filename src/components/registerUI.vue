@@ -1,6 +1,6 @@
 <template>
   <div class="loginUI">
-    <h2>登录</h2>
+    <h2>注册</h2>
     <!--表单提交监听器-->
     <form @submit.prevent="handleLogin">
       <div class="form-group">
@@ -12,7 +12,7 @@
         <input type="password" id="password" v-model="password" required />
       </div>
 
-      <div class="link">
+      <div class="link" @click="changePageToLogin">
         <a href = "">已有账号？点此登录</a>
       </div>
 
@@ -24,10 +24,15 @@
 
 <script setup>
 import { ref } from 'vue';
+import { defineEmits } from 'vue';
 
 const username = ref('');
 const password = ref('');
+const emit = defineEmits(['changePage']);
 
+function changePageToLogin() {
+  emit('updateRegister','login'); // 发送事件和新值
+}
 
 function handleLogin() {
   // 在这里添加登录逻辑，例如调用 API
