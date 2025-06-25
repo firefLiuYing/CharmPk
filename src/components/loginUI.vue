@@ -1,16 +1,23 @@
 <template>
-  <div class="login-container">
-    <h2>Login</h2>
+  <div class="loginUI">
+    <h2>登录</h2>
+    <!--表单提交监听器-->
     <form @submit.prevent="handleLogin">
       <div class="form-group">
-        <label for="username">Username:</label>
+        <label for="username">用户名:</label>
         <input type="text" id="username" v-model="username" required />
       </div>
       <div class="form-group">
-        <label for="password">Password:</label>
+        <label for="password">密码:</label>
         <input type="password" id="password" v-model="password" required />
       </div>
-      <button type="submit">Login</button>
+
+      <div class="link">
+        <a href = "">没有账号？点此注册</a>
+      </div>
+
+      <button type="submit">登录</button>
+
     </form>
   </div>
 </template>
@@ -22,28 +29,32 @@ const username = ref('');
 const password = ref('');
 
 function handleLogin() {
-  if (username.value && password.value) {
-    // 在这里添加登录逻辑，例如调用 API
-    console.log('Logging in with', username.value, password.value);
-    // 模拟登录成功
-    alert(`You are logged in as ${username.value}`);
-  } else {
-    alert('Please fill in both username and password.');
-  }
+  // 在这里添加登录逻辑，例如调用 API
+  console.log('Logging in with', username.value, password.value);
+  // 清空输入
+  //在这里之后增加向数据库发送请求和接受返回值
+  username.value = '';
+  password.value = '';
 }
 </script>
 
 <style scoped>
-.login-container {
+
+.loginUI {
   max-width: 300px;
   margin: 50px auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 .form-group {
   margin-bottom: 15px;
+}
+
+.link{
+  margin-bottom: 10px;
 }
 
 label {
