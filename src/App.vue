@@ -1,23 +1,37 @@
 <script>
-import loginUi from "./components/loginUI.vue"
-import registerUi from "./components/registerUI.vue"
-
+import loginUI from "./components/loginUI.vue"
+import registerUI from "./components/registerUI.vue"
 
 export default {
   name: 'App',
+  data() {
+    return {
+     pageName: 'login',
+   };
+  },
+  computed: {
+  },
   components: {
-    loginUi,
-    registerUi,
+    loginUI,
+    registerUI,
+  },
+
+  methods: {
+    updatePageName(newValue) {
+      this.pageName = newValue;
+    }
   }
+
 }
 </script>
 
 <template>
-    <div class = "image-container" v-show = "generalView = register">
+    <div class = "image-container">
     <img src="./assets/logo.png" alt="Vue Logo">
     </div>
-    <loginUi></loginUi>
-    <registerUi/>
+    <p>Parent Variable: {{ pageName }}</p>
+    <loginUI @updateParent = "updatePageName" v-if =  "this.pageName === 'login'"></loginUI>
+    <registerUI v-if =  "this.pageName === 'register'"/>
 
 </template>
 

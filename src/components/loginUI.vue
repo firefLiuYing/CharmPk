@@ -13,7 +13,7 @@
       </div>
 
       <div class="link">
-        <a href = "">没有账号？点此注册</a>
+        <a @click = "changePage()">没有账号？点此注册</a>
       </div>
 
       <button type="submit">登录</button>
@@ -24,6 +24,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { defineEmits } from 'vue';
 
 const username = ref('');
 const password = ref('');
@@ -35,6 +36,12 @@ function handleLogin() {
   //在这里之后增加向数据库发送请求和接受返回值
   username.value = '';
   password.value = '';
+  changePage()
+}
+const emit = defineEmits(['changePage']);
+
+function changePage() {
+  emit('updateParent','register'); // 发送事件和新值
 }
 </script>
 

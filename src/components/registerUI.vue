@@ -28,13 +28,13 @@ import { ref } from 'vue';
 const username = ref('');
 const password = ref('');
 
+
 function handleLogin() {
   // 在这里添加登录逻辑，例如调用 API
   console.log('Logging in with', username.value, password.value);
   // 清空输入
   username.value = '';
   password.value = '';
-  props.username.value = '';
 }
 </script>
 
