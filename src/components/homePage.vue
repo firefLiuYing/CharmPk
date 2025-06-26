@@ -18,16 +18,22 @@
             颜值PK
           </div>
           <div class="left-side-bar">
-              社交空间
+            社交空间
           </div>
           <div class="left-side-bar">
-              好友列表
+            好友列表
           </div>
         </div>
     </div>
 
     <div class="right">
-        12213
+      <p>FirstName: {{pageFirstName}}  |  LastName: {{pageLastName}}</p>
+        <div v-if="pageFirstName === 'faceEvaluate' && pageLastName === 'faceRanking'">
+          <face-ranking/>
+        </div>
+        <div v-if="pageFirstName === 'faceEvaluate' && pageLastName === 'faceEvaluate'">
+          <face-evaluate/>
+        </div>
     </div>
 
 
@@ -36,7 +42,20 @@
 </template>
 
 <script setup>
+
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import faceEvaluate from './faceEvaluate.vue'
+import faceRanking from './faceRanking.vue'
+import { useGlobalStore } from '@/stores/pageStore'
+
+
+// 获取 store 实例
+const globalStore = useGlobalStore()
+
+// 解构保持响应性
+const { pageFirstName,pageLastName } = storeToRefs(globalStore)
+
 
 const imageStyle = ref({
   width: '100px',
