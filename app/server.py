@@ -1,14 +1,12 @@
 # app/server.py
 from flask import Flask,request
-from app.database import db
+from app.models import db
 from app import app
-from sqlalchemy import inspect
+from app.database import print_all_tablename
 
 with app.app_context():
     db.create_all()
-    inspector=inspect(db.engine)
-    tables=inspector.get_table_names()
-    print("数据库中的表有：",tables)
+    print_all_tablename()
 
 @app.route('/hello',methods=['GET'])
 def home():
