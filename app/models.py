@@ -1,3 +1,5 @@
+from sqlalchemy.orm import backref
+
 from app import db
 
 # 用户模型
@@ -12,14 +14,15 @@ class User(db.Model):
 
     """关联的属性"""
     posts = db.relationship('Post', backref='author', lazy=True)
+    comments=db.relationship('Comment',backref='author',lazy=True)
+    likes=db.relationship('Like',backref='author',lazy=True)
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User 昵称：{self.nickname} id：{self.id}>'
 
 # 照片模型
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    image_url = db.Column(db.String(255), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
@@ -37,11 +40,12 @@ class Friendship(db.Model):
     user_2 = db.relationship('User', foreign_keys=[user_id_2])
 
     def __repr__(self):
-        return f'<Friendship {self.user_1.username} <-> {self.user_2.username}>'
+        return f'<Friendship {self.user_1.nickname} <-> {self.user_2.nickname}>'
 
 # 帖子模型
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title=db.Column(db.String(63),nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
@@ -50,7 +54,7 @@ class Post(db.Model):
     comments = db.relationship('Comment', backref='post', lazy=True)
 
     def __repr__(self):
-        return f'<Post {self.id}>'
+        return f'<Post 标题: {self.title} 作者：{self.author.nickname}>'
 
 # 评论模型
 class Comment(db.Model):
@@ -64,7 +68,7 @@ class Comment(db.Model):
     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]))
 
     def __repr__(self):
-        return f'<Comment {self.id}>'
+        return f'<Comment 发布者：{self.author} 内容：{self.content} id：{self.id}>'
 
 # 点赞模型
 class Like(db.Model):
@@ -75,15 +79,23 @@ class Like(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
-        return f'<Like {self.user_id} liked {self.target_type} {self.target_id}>'
+        return f'<Like {self.author.nickname} 赞了 {self.target_type} {self.target_id}>'
 
 # PK对战结果模型
-class PkResult(db.Model):
+class Pk(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_id_2 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user_photo_1=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=False)
+    user_photo_2=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=False)
+
+    user_1 = db.relationship('User', foreign_keys=[user_id_1])
+    user_2 = db.relationship('User', foreign_keys=[user_id_2])
+
+    status = db.Column(db.String(20), nullable=False, default='pending')
 
     def __repr__(self):
         return f'<PkResult {self.user_id_1} vs {self.user_id_2}>'

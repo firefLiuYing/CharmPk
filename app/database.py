@@ -1,4 +1,4 @@
-from app.models import User,db
+from app.models import User,Photo,Friendship,Post,Comment,Like,Pk,db
 from sqlalchemy import inspect
 
 def commit_all():
@@ -15,4 +15,64 @@ def print_all_tablename():
 def create_user(username,nickname,password_hash):
     new_user=User(username=username,nickname=nickname,password_hash=password_hash)
     db.session.add(new_user)
+    return
 
+def create_photo(user_id,score,category):
+    new_photo=Photo(user_id=user_id,score=score,category=category)
+    db.session.add(new_photo)
+    return
+
+def create_friendship(user_id_1,user_id_2):
+    new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2)
+    db.session.add(new_friendship)
+    return
+
+def create_post(user_id,title,content):
+    new_post=Post(user_id=user_id,title=title,content=content)
+    db.session.add(new_post)
+    return
+
+def create_comment(user_id,post_id,content,comment_id=None):
+    new_comment=Comment(user_id=user_id,post_id=post_id,content=content,comment_id=comment_id)
+    db.session.add(new_comment)
+    return
+
+def create_like(user_id,target_type,target_id):
+    new_like=Like(user_id=user_id,target_type=target_type,target_id=target_id)
+    db.session.add(new_like)
+    return
+
+def create_pk(user_id_1,user_id_2,winner_id,user_photo_1,user_photo_2):
+    new_pk=Pk(user_id_1=user_id_1,user_id_2=user_id_2,winner_id=winner_id,user_photo_1=user_photo_1,user_photo_2=user_photo_2)
+    db.session.add(new_pk)
+    return
+
+def print_all_table():
+    users=User.query.all()
+    print("User表：")
+    for user in users:
+        print(user.__repr__())
+    photos = Photo.query.all()
+    print("Photo表：")
+    for photo in photos:
+        print(photo.__repr__())
+    friendships=Friendship.query.all()
+    print("Friendship表：")
+    for friendship in friendships:
+        print(friendship.__repr__())
+    posts=Post.query.all()
+    print("Post表：")
+    for post in posts:
+        print(post.__repr__())
+    comments=Comment.query.all()
+    print("Comment表：")
+    for comment in comments:
+        print(comment.__repr__())
+    likes=Like.query.all()
+    print("Like表：")
+    for like in likes:
+        print(like.__repr__())
+    pks=Pk.query.all()
+    print("Pk表：")
+    for pk in pks:
+        print(pk.__repr__())
