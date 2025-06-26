@@ -12,16 +12,16 @@
         </div>
         <div class="bottom-left">
           <div class="left-side-bar">
-            颜值评分
+            <button class="left-button" @click="changeFirstName()">颜值评分</button>
           </div>
           <div class="left-side-bar">
-            颜值PK
+            <button class="left-button" @click="changeFirstName()">颜值PK</button>
           </div>
           <div class="left-side-bar">
-            社交空间
+            <button class="left-button" @click="changeFirstName()">社交空间</button>
           </div>
           <div class="left-side-bar">
-            好友列表
+            <button class="left-button" @click="changeFirstName()">好友列表</button>
           </div>
         </div>
     </div>
@@ -55,6 +55,7 @@ const globalStore = useGlobalStore()
 
 // 解构保持响应性
 const { pageFirstName,pageLastName } = storeToRefs(globalStore)
+const { changeFirstName } = useGlobalStore()
 
 
 const imageStyle = ref({
@@ -136,33 +137,30 @@ const imageStyle = ref({
   background-color: #f9f9f9;
 }
 
-/*
-.top-side-bar{
-  flex: 1;
-  justify-content: center;
-  align-content: center;
-  font-size: 20px;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  color: #787676;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 30px;
-  background-color: #17faa2;
-}
-*/
 
+
+.left-button{
+  width: 100%; /* 按钮宽度占满整个格子 */
+  height: 100%; /* 按钮高度占满整个格子 */
+  border: none; /* 去掉边框 */
+  background-color: #03fbb1; /* 设置背景颜色 */
+  color: white; /* 设置字体颜色 */
+  font-size: 16px; /* 设置字体大小 */
+  cursor: pointer; /* 设置鼠标悬停时的光标样式 */
+  outline: none; /* 去掉焦点时的轮廓 */
+}
 
 .bottom-left {
-  grid-column: 1;
   grid-row: 2;
+  grid-column: 1;
+
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
 
   display: grid;
-  grid-template-columns: auto; /* 定义两列 */
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 定义五行 */
+  grid-template-columns: auto;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .left-side-bar{
@@ -179,19 +177,6 @@ const imageStyle = ref({
 }
 
 
-/*
-.bottom-right {
-  grid-column: 2;
-  grid-row: 2;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-*/
+
 
 </style>
