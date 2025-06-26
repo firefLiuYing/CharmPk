@@ -10,7 +10,7 @@ def commit_all():
 def print_all_tablename():
     inspector=inspect(db.engine)
     tables=inspector.get_table_names()
-    print("所有表的名字："+tables)
+    print("所有表的名字：",tables)
 
 def create_user(username,nickname,password_hash):
     new_user=User(username=username,nickname=nickname,password_hash=password_hash)
