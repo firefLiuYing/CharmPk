@@ -14,7 +14,6 @@ const globalStore = useGlobalStore()
 // 解构保持响应性
 const { pageFirstName,pageLastName,userIcon,nickname} = storeToRefs(globalStore)
 const { changeFirstName } = useGlobalStore()
-const user_icon = ref(userIcon.value);
 
 const imageStyle = ref({
   width: '100px',
@@ -28,7 +27,7 @@ const imageStyle = ref({
     <div class="left">
         <div class="top-left">
           <div class="tl-img">
-           <img :src = "user_icon" alt="Setting" :style="imageStyle">
+           <img :src = "userIcon" alt="Setting" :style="imageStyle">
           </div>
           <div class="tl-text">
             {{ nickname }}

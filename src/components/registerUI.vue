@@ -44,30 +44,40 @@ import { useGlobalStore } from '@/stores/pageStore'
 const globalStore = useGlobalStore()
 
 // 解构保持响应性
-const { userIcon ,nickname,userName} = storeToRefs(globalStore)
+const { userIcon,nickname,user_id} = storeToRefs(globalStore)
 const username = ref('');
 const password = ref('');
 const showDialog = ref(false);
 const dialogContent = ref('123');
 const emit = defineEmits(['changePage']);
 
+
 const register = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/upload', username.value,password.value,{
+          const formData = new FormData();
+            formData.append('username', username.value);
+            formData.append('password', password.value);
+          const response = await axios.post('http://localhost:8080/api/register', formData,{
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json'
           },
         });
         console.log('Response from backend:', response.data);
 
         if(response.data.check_code === 102){
+        console.log('全都死光光了')
         dialogContent.value = '用户名已存在，请更换用户名';
         showDialog.value = true;
       }
         else{
           nickname.value = response.data.nickname;
           userIcon.value = response.data.user_icon;
-          userName.value = username.value;
+          user_id.value = response.data.user_id;
+
+          console.log(user_id.value);
+          console.log(nickname.value);
+          console.log(userIcon.value);
+
           changePageToHome();
         }
       } catch (error) {
@@ -81,7 +91,7 @@ function changePageToLogin() {
 }
 
 function changePageToHome() {
-  emit('updateLogin','home'); // 发送事件和新值
+  emit('updateRegister','home'); // 发送事件和新值
 }
 
 function handleRegister() {

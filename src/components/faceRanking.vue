@@ -1,4 +1,6 @@
 <script setup>
+import {onMounted, ref} from 'vue'
+    import axios from 'axios'
     import { storeToRefs } from 'pinia'
     import { useGlobalStore } from '@/stores/pageStore'
 
@@ -7,10 +9,37 @@
     const globalStore = useGlobalStore()
 
     // 解构保持响应性
-    const { pageLastName } = storeToRefs(globalStore)
+    const { pageLastName,user_id } = storeToRefs(globalStore)
     const { changeLastName } = globalStore
 
+    const nouse = ref('')
+    const points = ref([]);
+    const images = ref([]);
 
+    nouse.value = pageLastName
+    const loadUserCharmRanking = async () => {
+      try {
+        const formData = new FormData();
+        formData.value.append('user_id', user_id.value);
+        const response = await axios.post('/api/loadUserCharmRanking', formData,{
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Response from backend:', response.data);
+
+        points.value = response.data.points;
+        images.value = response.data.images;
+
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    };
+
+
+
+
+    onMounted(loadUserCharmRanking)
 </script>
 
 <template>
@@ -25,14 +54,25 @@
           </div>
       </div>
       <div class="content">
-      <span>Content</span>
+         <table>
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th>Number</th>
+          <th>String</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(num, index) in points" :key="index">
+          <td>{{ index }}</td>
+          <td>{{ num }}</td>
+          <td>{{ images[index] }}</td>
+        </tr>
+      </tbody>
+    </table>
       </div>
   </div>
 
-
-    <p>
-      {{ pageLastName }}
-    </p>
 </template>
 <style scoped>
 .right-container{
@@ -87,5 +127,29 @@
   text-align: center;
   background-color: coral;
   font-size: 64px;
+}
+</style>
+
+<style scoped>
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+th {
+  background-color: #f2f2f2;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
 }
 </style>

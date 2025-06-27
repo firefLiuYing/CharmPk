@@ -10,7 +10,7 @@ import { useGlobalStore } from '@/stores/pageStore'
 const globalStore = useGlobalStore()
 
 // 解构保持响应性
-const { userIcon ,nickname,userName} = storeToRefs(globalStore)
+const { userIcon ,nickname,user_id} = storeToRefs(globalStore)
 
 const username = ref('');
 const password = ref('');
@@ -23,10 +23,11 @@ function handleLogin() {
   console.log('Logging in with', username.value, password.value);
   // 清空输入
   //在这里之后增加向数据库发送请求和接受返回值
+  login()
   username.value = '';
   password.value = '';
 
-  login()
+
 }
 const emit = defineEmits(['changePage']);
 
@@ -40,9 +41,13 @@ function changePageToHome() {
 
 const login = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', username.value,password.value,{
+      const formData = new FormData();
+        formData.append('username', username.value);
+        formData.append('password', password.value);
+
+      const response = await axios.post('/api/login', formData,{
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       console.log('Response from backend:', response.data);
@@ -54,8 +59,10 @@ const login = async () => {
       else{
         userIcon.value = response.data.user_icon;
         nickname.value = response.data.nickname;
-        userName.value = username.value;
+        user_id.value = response.data.user_id;
 
+        console.log(user_id.value);
+        console.log(nickname.value);
         changePageToHome()
       }
     } catch (error) {

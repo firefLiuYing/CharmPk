@@ -1,15 +1,14 @@
 <script setup>
-    import { storeToRefs } from 'pinia'
-    import { useGlobalStore } from '@/stores/pageStore'
     import { ref } from 'vue'
     import axios from 'axios'
-
+    import { storeToRefs } from 'pinia'
+    import { useGlobalStore } from '@/stores/pageStore'
 
     // 获取 store 实例
     const globalStore = useGlobalStore()
 
     // 解构保持响应性
-    const { pageLastName,userName } = storeToRefs(globalStore)
+    const { pageLastName,user_id} = storeToRefs(globalStore)
     const { changeLastName } = globalStore
 
     const imageSrc = ref(null);
@@ -39,19 +38,18 @@
     };
 
     const faceEvaluate = async () => {
-      let response;
       try {
-        const response = await axios.post('http://localhost:5000/login', formData.value, userName.value,{
+        formData.value.append('user_id', user_id.value);
+        const response = await axios.post('/api/faceEvaluate', formData,{
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
           },
         });
         console.log('Response from backend:', response.data);
+              point.value = response.data.point;
       } catch (error) {
         console.error('Error uploading image:', error);
       }
-
-      point.value = response.data.point;
     };
 
 
