@@ -9,7 +9,7 @@ import base64
 from app.database import *
 from app.tools import *
 import os
-from face_ai import get_result
+from app.face_ai import get_result
 
 
 class Config:
