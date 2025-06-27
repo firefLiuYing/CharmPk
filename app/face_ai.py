@@ -6,9 +6,11 @@ from flask import jsonify
 from models.predict_scripts.emotion_predict import EmotionPredictor
 from models.predict_scripts.score_predict import get_model,get_score
 
-SCORE_MODEL_DIR="D:\\UserResource\\Code\\CharmPk\\models\\score_model.pth"
-EMOTION_MODEL_DIR="D:\\UserResource\\Code\\CharmPk\\models\\emotion_model.pth"
+"""SCORE_MODEL_DIR="D:\\UserResource\\Code\\CharmPk\\models\\score_model.pth"
+EMOTION_MODEL_DIR="D:\\UserResource\\Code\\CharmPk\\models\\emotion_model.pth" """
 
+SCORE_MODEL_DIR="models\\score_model.pth"
+EMOTION_MODEL_DIR="models\\emotion_model.pth"
 
 score_model=get_model()
 

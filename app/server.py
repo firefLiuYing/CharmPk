@@ -1,15 +1,62 @@
 # app/server.py
+import atexit
+import shutil
+import tempfile
 from flask import Flask, request, jsonify
 from app.models import db
 from app import app
 import base64
 from app.database import *
 from app.tools import *
+import os
+from face_ai import get_result
 
+
+class Config:
+    TEMP_DIR=os.path.join(tempfile.gettempdir(),'image_library_temp')
+    STORAGE_MODE='temp'
+os.makedirs(Config.TEMP_DIR,exist_ok=True)
+@atexit.register
+def cleanup():
+    if Config.STORAGE_MODE=='temp' and os.path.exists(Config.TEMP_DIR):
+        shutil.rmtree(Config.TEMP_DIR)
+        print(f"已清理临时目录：{Config.TEMP_DIR}")
+
+def save_uploaded_file(file_stream,filename):
+    file_ext=os.path.splitext(filename)[1] or '.jpg'
+    safe_filename=f"{os.urandom(8).hex()}{file_ext}"
+    save_path=os.path.join(Config.TEMP_DIR,safe_filename)
+    try:
+        img=Image.open(file_stream)
+        img.verify()
+        file_stream.seek(0)
+        with open(save_path,'wb') as f:
+            f.write(file_stream.read())
+        return save_path
+    except Exception as e:
+        print(f"文件保存失败：{str(e)}")
+        if os.path.exists(save_path):
+            os.remove(save_path)
+        raise
 
 with app.app_context():
     db.create_all()
     print_all_tablename()
+
+@app.route('/faceEvaluate',methods=['POST'])
+def face_predict():
+    if 'username' not in request.form:
+        return jsonify({'check_code':103})
+
+    if 'image' not in request.files:
+        return jsonify({'check_code':103})
+    file=request.files['image']
+    if file.filename=='':
+        return jsonify({'check_code':104})
+    img_path=save_uploaded_file(file.stream,file.filename)
+    calculate_result=get_result(img_path)
+    return jsonify({'check_code':520})
+
 
 @app.route('/login',methods=['POST'])
 def login():
@@ -21,7 +68,7 @@ def login():
         return jsonify(result)
     user_icon=process_image(result['user_icon'])
     nickname=result['nickname']
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname})
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname,'username':username})
 
 @app.route('/register',methods=['POST'])
 def register():
@@ -33,7 +80,7 @@ def register():
         return jsonify({'check_code':102})
     commit_all()
     user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname']})
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname'],'username':username})
 
 @app.route('/loadUserCharmRanking',methods=['POST'])
 def load_user_charm_ranking():
@@ -85,3 +132,4 @@ def refuse_pk_application():
 @app.route('/createNews',methods=['POST'])
 def create_post():
     return jsonify({'check_code': 520})
+
