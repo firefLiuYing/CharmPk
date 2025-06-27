@@ -13,15 +13,22 @@ with app.app_context():
 
 @app.route('/login',methods=['POST'])
 def login():
-    user_icon=process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0721'})
+    data=request.get_json()
+    username=data.get('username')
+    password=data.get('password')
+    result=login_user(username, password)
+    if result['check_code']==101:
+        return jsonify(result)
+    user_icon=process_image(result['user_icon'])
+    nickname=result['nickname']
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname})
 
 @app.route('/register',methods=['POST'])
 def register():
     data=request.get_json()
     username=data.get('username')
     password=data.get('password')
-    result=create_user(username,password)
+    result=register_user(username, password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
     commit_all()

@@ -12,7 +12,17 @@ def print_all_tablename():
     tables=inspector.get_table_names()
     print("所有表的名字：",tables)
 
-def create_user(username,password_hash):
+def login_user(username,password):
+    existing_user=User.query.filter_by(username=username).first()
+    if existing_user:
+        if existing_user.password_hash==password:
+            return {'check_code':520,'nickname':existing_user.nickname,'user_icon':existing_user.user_icon}
+        else:
+            return {'check_code':101}
+    else:
+        return {'check_code':101}
+
+def register_user(username, password_hash):
     existing_user=User.query.filter_by(username=username).first()
     if existing_user:
         return {'check_code':102}
