@@ -4,6 +4,8 @@ from app.models import db
 from app import app
 import base64
 from app.database import *
+from app.tools import *
+
 
 with app.app_context():
     db.create_all()
@@ -20,7 +22,8 @@ with app.app_context():
 
 @app.route('/login',methods=['POST'])
 def login():
-    return jsonify({'check_code':999,'nickname':'用户0721'})
+    user_icon=process_image('user_data/icon/default_icon.png')
+    return jsonify({'check_code':999,'user_icon':user_icon,'nickname':'用户0721'})
 
 @app.route('/register',methods=['POST'])
 def register():
