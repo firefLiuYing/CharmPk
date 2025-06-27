@@ -8,6 +8,7 @@ app = Flask(__name__)
 # 配置数据库
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite+pysqlite:///:memory:'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAX_CONTENT_LENGTH']=16*1024*1024
 
 # 初始化 db 和 bcrypt
 db = SQLAlchemy(app)

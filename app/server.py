@@ -58,9 +58,8 @@ def face_predict():
 
 @app.route('/login',methods=['POST'])
 def login():
-    data=request.get_json()
-    username=data.get('username')
-    password=data.get('password')
+    username=request.form.get('username')
+    password=request.form.get('password')
     result=login_user(username, password)
     if result['check_code']==101:
         return jsonify(result)
@@ -71,9 +70,8 @@ def login():
 
 @app.route('/register',methods=['POST'])
 def register():
-    data=request.get_json()
-    username=data.get('username')
-    password=data.get('password')
+    username=request.form.get('username')
+    password=request.form.get('password')
     result=register_user(username, password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
