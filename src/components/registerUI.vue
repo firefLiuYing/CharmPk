@@ -26,7 +26,7 @@
   <div v-if="showDialog" class="dialog-overlay" @click="showDialog = false">
     <div class="dialog" @click.stop>
       <h2>警告</h2>
-      <p>{{dialogeContent}}</p>
+      <p>{{dialogContent}}</p>
     </div>
   </div>
 </div>
@@ -36,12 +36,19 @@
 import { ref } from 'vue';
 import { defineEmits } from 'vue';
 import axios from 'axios'
-import response from "core-js/internals/is-forced";
+import { storeToRefs } from 'pinia'
+import { useGlobalStore } from '@/stores/pageStore'
 
+
+// 获取 store 实例
+const globalStore = useGlobalStore()
+
+// 解构保持响应性
+const { userIcon ,nickname,userName} = storeToRefs(globalStore)
 const username = ref('');
 const password = ref('');
 const showDialog = ref(false);
-const dialogeContent = ref('123');
+const dialogContent = ref('123');
 const emit = defineEmits(['changePage']);
 
 const register = async () => {
@@ -52,18 +59,29 @@ const register = async () => {
           },
         });
         console.log('Response from backend:', response.data);
+
+        if(response.data.check_code === 102){
+        dialogContent.value = '用户名已存在，请更换用户名';
+        showDialog.value = true;
+      }
+        else{
+          nickname.value = response.data.nickname;
+          userIcon.value = response.data.user_icon;
+          userName.value = username.value;
+          changePageToHome();
+        }
       } catch (error) {
         console.error('Error uploading image:', error);
       }
 
-      if(response.data.check_code === 102){
-        showDialog.value = true;
-        dialogeContent.value = '用户名已存在，请更换用户名';
-      }
     };
 
 function changePageToLogin() {
   emit('updateRegister','login'); // 发送事件和新值
+}
+
+function changePageToHome() {
+  emit('updateLogin','home'); // 发送事件和新值
 }
 
 function handleRegister() {

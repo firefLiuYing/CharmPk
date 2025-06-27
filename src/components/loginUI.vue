@@ -10,7 +10,7 @@ import { useGlobalStore } from '@/stores/pageStore'
 const globalStore = useGlobalStore()
 
 // 解构保持响应性
-const { userIcon ,nickname} = storeToRefs(globalStore)
+const { userIcon ,nickname,userName} = storeToRefs(globalStore)
 
 const username = ref('');
 const password = ref('');
@@ -39,7 +39,6 @@ function changePageToHome() {
 }
 
 const login = async () => {
-    let response;
     try {
       const response = await axios.post('http://localhost:5000/login', username.value,password.value,{
         headers: {
@@ -47,19 +46,20 @@ const login = async () => {
         },
       });
       console.log('Response from backend:', response.data);
+
+      if(response.data.check_code === 101){
+      dialogeContent.value = '用户不存在或密码错误';
+      showDialog.value = true;
+      }
+      else{
+        userIcon.value = response.data.user_icon;
+        nickname.value = response.data.nickname;
+        userName.value = username.value;
+
+        changePageToHome()
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
-    }
-
-    if(response.data.check_code === 101){
-      showDialog.value = true;
-      dialogeContent.value = '用户不存在或密码错误';
-    }
-    else{
-      userIcon.value = response.data.user_icon;
-      nickname.value = response.data.nickname;
-
-      changePageToHome()
     }
 };
 

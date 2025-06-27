@@ -9,13 +9,15 @@
     const globalStore = useGlobalStore()
 
     // 解构保持响应性
-    const { pageLastName } = storeToRefs(globalStore)
+    const { pageLastName,userName } = storeToRefs(globalStore)
     const { changeLastName } = globalStore
 
     const imageSrc = ref(null);
     const fileInput = ref(null);
     const formData = ref(null);
-    const points = ref('0');
+    const point = ref(null);
+    const showDialog = ref(false);
+    const dialogContent = ref('213');
 
     const triggerInput = () =>{
       fileInput.value.click();
@@ -33,13 +35,13 @@
         };
         reader.readAsDataURL(file);
 
-        uploadImage();
       }
     };
 
-    const uploadImage = async () => {
+    const faceEvaluate = async () => {
+      let response;
       try {
-        const response = await axios.post('http://localhost:5000/login', formData.value, {
+        const response = await axios.post('http://localhost:5000/login', formData.value, userName.value,{
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -48,11 +50,10 @@
       } catch (error) {
         console.error('Error uploading image:', error);
       }
+
+      point.value = response.data.point;
     };
 
-    const Evaluate = () => {
-        points.value = '100'
-    }
 
 </script>
 
@@ -74,10 +75,20 @@
           <div v-if="!imageSrc">Click to upload an image</div>
           <img :src="imageSrc" alt="Uploaded Image" v-else style="width: 100%; height: 100%; object-fit: contain;" />
         </div>
-        <div class="response-block" v-if="points === '100'">{{points}}</div>
-        <button class="evaluate-button" @click="Evaluate"> 颜值打分 </button>
+        <div class="response-block" v-if="!point">{{point}}</div>
+        <button class="evaluate-button" @click="faceEvaluate"> 颜值打分 </button>
       </div>
   </div>
+
+  <div>
+  <button @click="showDialog=true">显示弹窗</button>
+  <div v-if="showDialog" class="dialog-overlay" @click="showDialog = false">
+    <div class="dialog" @click.stop>
+      <h2>警告</h2>
+      <p>{{dialogContent}}</p>
+    </div>
+  </div>
+</div>
 
   <p>
     {{ pageLastName }}
@@ -197,5 +208,30 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+</style>
+
+<style>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
 }
 </style>
