@@ -12,10 +12,15 @@ def print_all_tablename():
     tables=inspector.get_table_names()
     print("所有表的名字：",tables)
 
-def create_user(username,nickname,password_hash):
+def create_user(username,password_hash):
+    existing_user=User.query.filter_by(username=username).first()
+    if existing_user:
+        return {'check_code':102}
+    user_count = User.query.count()
+    nickname = f"用户{user_count + 1:04d}"
     new_user=User(username=username,nickname=nickname,password_hash=password_hash)
     db.session.add(new_user)
-    return
+    return {'check_code':520,'nickname':nickname}
 
 def create_photo(user_id,score,category):
     new_photo=Photo(user_id=user_id,score=score,category=category)

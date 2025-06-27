@@ -10,15 +10,6 @@ from app.tools import *
 with app.app_context():
     db.create_all()
     print_all_tablename()
-    create_user('123','龚展鹏',123)
-    create_photo(1,100,'qwe')
-    create_post(1,'帖子','这是帖子内容')
-    create_friendship(1,1)
-    create_pk(1,1,1,1,1)
-    create_like(1,'post',1)
-    create_comment(1,1,'这是评论')
-    commit_all()
-    print_all_table()
 
 @app.route('/login',methods=['POST'])
 def login():
@@ -27,12 +18,17 @@ def login():
 
 @app.route('/register',methods=['POST'])
 def register():
+    data=request.get_json()
+    username=data.get('username')
+    password=data.get('password')
+    result=create_user(username,password)
+    if result['check_code']==102:
+        return jsonify({'check_code':102})
     user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0721'})
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname']})
 
 @app.route('/loadUserCharmRanking',methods=['POST'])
 def load_user_charm_ranking():
-
     return jsonify({'check_code':520,'images':[],'points':[]})
 
 @app.route('/searchUser',methods=['POST'])
