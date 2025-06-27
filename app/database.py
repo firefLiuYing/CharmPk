@@ -16,7 +16,7 @@ def login_user(username,password):
     existing_user=User.query.filter_by(username=username).first()
     if existing_user:
         if existing_user.password_hash==password:
-            return {'check_code':520,'nickname':existing_user.nickname,'user_icon':existing_user.user_icon}
+            return {'check_code':520,'nickname':existing_user.nickname,'user_icon':existing_user.user_icon,'user_id':existing_user.id}
         else:
             return {'check_code':101}
     else:
@@ -30,9 +30,11 @@ def register_user(username, password_hash):
     nickname = f"用户{user_count + 1:04d}"
     new_user=User(username=username,nickname=nickname,password_hash=password_hash)
     db.session.add(new_user)
-    return {'check_code':520,'nickname':nickname}
+    commit_all()
+    return {'check_code':520,'nickname':nickname,'user_id':new_user.id}
 
-def create_photo(user_id,score,category):
+def upload_photo(user_id, score, category):
+
     new_photo=Photo(user_id=user_id,score=score,category=category)
     db.session.add(new_photo)
     return

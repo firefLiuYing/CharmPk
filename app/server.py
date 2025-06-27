@@ -3,13 +3,11 @@ import atexit
 import shutil
 import tempfile
 from flask import Flask, request, jsonify
-from app.models import db
 from app import app
-import base64
 from app.database import *
 from app.tools import *
 import os
-from app.face_ai import get_result
+"""from app.face_ai import get_result"""
 
 
 class Config:
@@ -45,7 +43,7 @@ with app.app_context():
 
 @app.route('/faceEvaluate',methods=['POST'])
 def face_predict():
-    if 'username' not in request.form:
+    """if 'username' not in request.form:
         return jsonify({'check_code':103})
 
     if 'image' not in request.files:
@@ -54,7 +52,7 @@ def face_predict():
     if file.filename=='':
         return jsonify({'check_code':104})
     img_path=save_uploaded_file(file.stream,file.filename)
-    calculate_result=get_result(img_path)
+    calculate_result=get_result(img_path)"""
     return jsonify({'check_code':520})
 
 
@@ -68,7 +66,8 @@ def login():
         return jsonify(result)
     user_icon=process_image(result['user_icon'])
     nickname=result['nickname']
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname,'username':username})
+    user_id=result['id']
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id})
 
 @app.route('/register',methods=['POST'])
 def register():
@@ -78,9 +77,9 @@ def register():
     result=register_user(username, password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
-    commit_all()
     user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname'],'username':username})
+    user_id=result['user_id']
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname'],'user_id':user_id})
 
 @app.route('/loadUserCharmRanking',methods=['POST'])
 def load_user_charm_ranking():

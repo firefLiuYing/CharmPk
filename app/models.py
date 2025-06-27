@@ -14,6 +14,7 @@ class User(db.Model):
     user_icon=db.Column(db.String(255),default='user_data/icon/default_icon.png')
 
     """关联的属性"""
+    images=db.relationship('Photo',backref='author',lazy=True)
     posts = db.relationship('Post', backref='author', lazy=True)
     comments=db.relationship('Comment',backref='author',lazy=True)
     likes=db.relationship('Like',backref='author',lazy=True)
