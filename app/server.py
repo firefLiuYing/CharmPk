@@ -66,7 +66,7 @@ def login():
         return jsonify(result)
     user_icon=process_image(result['user_icon'])
     nickname=result['nickname']
-    user_id=result['id']
+    user_id=result['user_id']
     return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id})
 
 @app.route('/register',methods=['POST'])
