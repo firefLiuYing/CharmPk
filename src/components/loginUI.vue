@@ -1,3 +1,70 @@
+<script setup>
+import { ref } from 'vue';
+import { defineEmits } from 'vue';
+import { storeToRefs } from 'pinia'
+import axios from 'axios'
+import { useGlobalStore } from '@/stores/pageStore'
+
+
+// 获取 store 实例
+const globalStore = useGlobalStore()
+
+// 解构保持响应性
+const { userIcon ,nickname} = storeToRefs(globalStore)
+
+const username = ref('');
+const password = ref('');
+const showDialog = ref(false);
+const dialogeContent = ref('123');
+
+
+function handleLogin() {
+  // 在这里添加登录逻辑，例如调用 API
+  console.log('Logging in with', username.value, password.value);
+  // 清空输入
+  //在这里之后增加向数据库发送请求和接受返回值
+  username.value = '';
+  password.value = '';
+
+  login()
+}
+const emit = defineEmits(['changePage']);
+
+function changePageToRegister() {
+  emit('updateLogin','register'); // 发送事件和新值
+}
+
+function changePageToHome() {
+  emit('updateLogin','home'); // 发送事件和新值
+}
+
+const login = async () => {
+    let response;
+    try {
+      const response = await axios.post('http://localhost:5000/login', username.value,password.value,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Response from backend:', response.data);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+
+    if(response.data.check_code === 101){
+      showDialog.value = true;
+      dialogeContent.value = '用户不存在或密码错误';
+    }
+    else{
+      userIcon.value = response.data.user_icon;
+      nickname.value = response.data.nickname;
+
+      changePageToHome()
+    }
+};
+
+</script>
+
 <template>
   <div class="loginUI">
     <h2>登录</h2>
@@ -20,35 +87,17 @@
 
     </form>
   </div>
+
+<div>
+  <button @click="showDialog=true">显示弹窗</button>
+  <div v-if="showDialog" class="dialog-overlay" @click="showDialog = false">
+    <div class="dialog" @click.stop>
+      <h2>警告</h2>
+      <p>{{dialogeContent}}</p>
+    </div>
+  </div>
+</div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import { defineEmits } from 'vue';
-
-const username = ref('');
-const password = ref('');
-
-function handleLogin() {
-  // 在这里添加登录逻辑，例如调用 API
-  console.log('Logging in with', username.value, password.value);
-  // 清空输入
-  //在这里之后增加向数据库发送请求和接受返回值
-   changePageToHome()
-  username.value = '';
-  password.value = '';
-}
-const emit = defineEmits(['changePage']);
-
-function changePageToRegister() {
-  emit('updateLogin','register'); // 发送事件和新值
-}
-
-function changePageToHome() {
-  emit('updateLogin','home'); // 发送事件和新值
-}
-
-</script>
 
 <style scoped>
 
@@ -92,5 +141,30 @@ button {
 
 button:hover {
   background-color: #369f7e;
+}
+</style>
+
+<style>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
 }
 </style>

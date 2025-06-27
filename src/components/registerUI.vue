@@ -2,7 +2,7 @@
   <div class="loginUI">
     <h2>注册</h2>
     <!--表单提交监听器-->
-    <form @submit.prevent="handleLogin">
+    <form @submit.prevent="handleRegister">
       <div class="form-group">
         <label for="username">用户名:</label>
         <input type="text" id="username" v-model="username" required />
@@ -20,23 +20,57 @@
 
     </form>
   </div>
+
+<div>
+  <button @click="showDialog=true">显示弹窗</button>
+  <div v-if="showDialog" class="dialog-overlay" @click="showDialog = false">
+    <div class="dialog" @click.stop>
+      <h2>警告</h2>
+      <p>{{dialogeContent}}</p>
+    </div>
+  </div>
+</div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { defineEmits } from 'vue';
+import axios from 'axios'
+import response from "core-js/internals/is-forced";
 
 const username = ref('');
 const password = ref('');
+const showDialog = ref(false);
+const dialogeContent = ref('123');
 const emit = defineEmits(['changePage']);
+
+const register = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/upload', username.value,password.value,{
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('Response from backend:', response.data);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+
+      if(response.data.check_code === 102){
+        showDialog.value = true;
+        dialogeContent.value = '用户名已存在，请更换用户名';
+      }
+    };
 
 function changePageToLogin() {
   emit('updateRegister','login'); // 发送事件和新值
 }
 
-function handleLogin() {
+function handleRegister() {
   // 在这里添加登录逻辑，例如调用 API
   console.log('Logging in with', username.value, password.value);
+
+  register();
   // 清空输入
   username.value = '';
   password.value = '';
@@ -85,5 +119,30 @@ button {
 
 button:hover {
   background-color: #369f7e;
+}
+</style>
+
+<style>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
 }
 </style>

@@ -39,7 +39,7 @@
 
     const uploadImage = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/upload', formData.value, {
+        const response = await axios.post('http://localhost:5000/login', formData.value, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

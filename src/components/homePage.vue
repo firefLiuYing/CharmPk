@@ -1,13 +1,37 @@
 <!-- HomePage.vue -->
+<script setup>
+
+import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import faceEvaluate from './faceEvaluate.vue'
+import faceRanking from './faceRanking.vue'
+import { useGlobalStore } from '@/stores/pageStore'
+
+
+// 获取 store 实例
+const globalStore = useGlobalStore()
+
+// 解构保持响应性
+const { pageFirstName,pageLastName,userIcon,nickname} = storeToRefs(globalStore)
+const { changeFirstName } = useGlobalStore()
+const user_icon = ref(userIcon.value);
+
+const imageStyle = ref({
+  width: '100px',
+  height: '100px',
+  'object-fit': 'cover'
+});
+</script>
+
 <template>
   <div class="container">
     <div class="left">
         <div class="top-left">
           <div class="tl-img">
-           <img src = "@/assets/setting.png" alt="Setting" :style="imageStyle">
+           <img :src = "user_icon" alt="Setting" :style="imageStyle">
           </div>
           <div class="tl-text">
-            粉色默剧
+            {{ nickname }}
           </div>
         </div>
         <div class="bottom-left">
@@ -36,34 +60,10 @@
         </div>
     </div>
 
-
   </div>
 
 </template>
 
-<script setup>
-
-import { ref } from 'vue';
-import { storeToRefs } from 'pinia'
-import faceEvaluate from './faceEvaluate.vue'
-import faceRanking from './faceRanking.vue'
-import { useGlobalStore } from '@/stores/pageStore'
-
-
-// 获取 store 实例
-const globalStore = useGlobalStore()
-
-// 解构保持响应性
-const { pageFirstName,pageLastName } = storeToRefs(globalStore)
-const { changeFirstName } = useGlobalStore()
-
-
-const imageStyle = ref({
-  width: '100px',
-  height: '100px',
-  'object-fit': 'cover'
-});
-</script>
 
 <style scoped>
 .container {
@@ -175,8 +175,5 @@ const imageStyle = ref({
   padding: 16px;
   background-color: #17faa2;
 }
-
-
-
 
 </style>
