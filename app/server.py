@@ -24,6 +24,7 @@ def register():
     result=create_user(username,password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
+    commit_all()
     user_icon = process_image('user_data/icon/default_icon.png')
     return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname']})
 
