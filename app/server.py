@@ -23,23 +23,27 @@ with app.app_context():
 @app.route('/login',methods=['POST'])
 def login():
     user_icon=process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':999,'user_icon':user_icon,'nickname':'用户0721'})
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0721'})
 
 @app.route('/register',methods=['POST'])
 def register():
-    return jsonify({'check_code':999,'nickname':'用户0721'})
+    user_icon = process_image('user_data/icon/default_icon.png')
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0721'})
 
 @app.route('/loadUserCharmRanking',methods=['POST'])
 def load_user_charm_ranking():
-    return jsonify({'check_code':999,'images':[],'points':[]})
+
+    return jsonify({'check_code':520,'images':[],'points':[]})
 
 @app.route('/searchUser',methods=['POST'])
 def search_user():
-    return jsonify({'check_point':999,'nickname':'用户0d00'})
+    user_icon = process_image('user_data/icon/default_icon.png')
+    return jsonify({'check_point':520,'user_icon':user_icon,'nickname':'用户0d00'})
 
 @app.route('/applyForFriends',methods=['POST'])
 def apply_friend():
-    return jsonify({'check_code':999,'nickname':'用户0d000721'})
+    user_icon = process_image('user_data/icon/default_icon.png')
+    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0d000721'})
 
 @app.route('/acceptApplication',methods=['POST'])
 def accept_application():
@@ -55,7 +59,8 @@ def load_friends():
 
 @app.route('/loadPkRecords',methods=['POST'])
 def load_pk():
-    return jsonify({'check_code':999,'nickname_1':'用户0d00','nickname_2':'用户0721'})
+    user_icon = process_image('user_data/icon/default_icon.png')
+    return jsonify({'check_code':999,'user_icon_1':user_icon,'nickname_1':'用户0d00','user_icon_2':user_icon,'nickname_2':'用户0721'})
 
 @app.route('/createPkRecords',methods=['POST'])
 def create_pk():
