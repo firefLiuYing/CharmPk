@@ -63,7 +63,9 @@ def face_predict():
 
 @app.route('/download/<filename>',methods=['GET'])
 def download(filename):
-    return send_from_directory('','')
+    if os.path.exists(os.path.join(app.config['TEMP_DIR'],filename)):
+        return send_from_directory(app.config['TEMP_DIR'],filename)
+    return jsonify({'error':'File Not Found'}),404
 
 @app.route('/upload',methods=['POST'])
 def upload():
@@ -76,7 +78,7 @@ def login():
     result=login_user(username, password)
     if result['check_code']==101:
         return jsonify(result)
-    user_icon=process_image(result['user_icon'])
+    user_icon=result['user_icon']
     nickname=result['nickname']
     user_id=result['user_id']
     return jsonify({'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id})
@@ -88,7 +90,7 @@ def register():
     result=register_user(username, password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
-    user_icon = process_image('user_data/icon/default_icon.png')
+    user_icon = 'http://127.0.0.1:5000/download/default_icon.png'
     user_id=result['user_id']
     return jsonify({'check_code':520,'user_icon':user_icon,'nickname':result['nickname'],'user_id':user_id})
 
