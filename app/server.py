@@ -49,16 +49,10 @@ with app.app_context():
 
 @app.route('/faceEvaluate',methods=['POST'])
 def face_predict():
-    """if 'username' not in request.form:
-        return jsonify({'check_code':103})
-
     if 'image' not in request.files:
         return jsonify({'check_code':103})
     file=request.files['image']
-    if file.filename=='':
-        return jsonify({'check_code':104})
-    img_path=save_uploaded_file(file.stream,file.filename)
-    calculate_result=get_result(img_path)"""
+    user_id=request.form.get('user_id')
     return jsonify({'check_code':520})
 
 @app.route('/download/<filename>',methods=['GET'])
@@ -66,10 +60,6 @@ def download(filename):
     if os.path.exists(os.path.join(app.config['TEMP_DIR'],filename)):
         return send_from_directory(app.config['TEMP_DIR'],filename)
     return jsonify({'error':'File Not Found'}),404
-
-@app.route('/upload',methods=['POST'])
-def upload():
-    return jsonify({''})
 
 @app.route('/login',methods=['POST'])
 def login():
