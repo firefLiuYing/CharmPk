@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia'
 import faceEvaluate from './faceEvaluate.vue'
 import faceRanking from './faceRanking.vue'
 import { useGlobalStore } from '@/stores/pageStore'
+import AddFriends from "@/components/addFriends.vue";
 
 
 // 获取 store 实例
@@ -13,7 +14,7 @@ const globalStore = useGlobalStore()
 
 // 解构保持响应性
 const { pageFirstName,pageLastName,userIcon,nickname} = storeToRefs(globalStore)
-const { changeFirstName } = useGlobalStore()
+const { changeFirstName,changeLastName } = useGlobalStore()
 
 const imageStyle = ref({
   width: '100px',
@@ -35,7 +36,7 @@ const imageStyle = ref({
         </div>
         <div class="bottom-left">
           <div class="left-side-bar">
-            <button class="left-button" @click="changeFirstName()">颜值评分</button>
+            <button class="left-button" @click="changeFirstName(faceEvaluate),changeLastName(faceEvaluate)">颜值评分</button>
           </div>
           <div class="left-side-bar">
             <button class="left-button" @click="changeFirstName()">颜值PK</button>
@@ -44,7 +45,7 @@ const imageStyle = ref({
             <button class="left-button" @click="changeFirstName()">社交空间</button>
           </div>
           <div class="left-side-bar">
-            <button class="left-button" @click="changeFirstName()">好友列表</button>
+            <button class="left-button" @click="changeFirstName(friends),changeLastName(friendsList)">好友列表</button>
           </div>
         </div>
     </div>
@@ -56,6 +57,15 @@ const imageStyle = ref({
         </div>
         <div v-if="pageFirstName === 'faceEvaluate' && pageLastName === 'faceEvaluate'">
           <face-evaluate/>
+        </div>
+        <div v-if="pageFirstName === 'friends' && pageLastName === 'addFriends'">
+          <add-friends/>
+        </div>
+        <div v-if="pageFirstName === 'friends' && pageLastName === 'friendList'">
+          <add-friends/>
+        </div>
+        <div v-if="pageFirstName === 'friends' && pageLastName === 'applicationList'">
+          <add-friends/>
         </div>
     </div>
 

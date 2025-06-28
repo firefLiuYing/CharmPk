@@ -20,7 +20,7 @@ import {onMounted, ref} from 'vue'
     const loadUserCharmRanking = async () => {
       try {
         const formData = new FormData();
-        formData.value.append('user_id', user_id.value);
+        formData.append('user_id', user_id.value);
         const response = await axios.post('/api/loadUserCharmRanking', formData,{
           headers: {
             'Content-Type': 'application/json',
@@ -35,9 +35,6 @@ import {onMounted, ref} from 'vue'
         console.error('Error uploading image:', error);
       }
     };
-
-
-
 
     onMounted(loadUserCharmRanking)
 </script>
@@ -54,22 +51,22 @@ import {onMounted, ref} from 'vue'
           </div>
       </div>
       <div class="content">
-         <table>
-      <thead>
-        <tr>
-          <th>Index</th>
-          <th>Number</th>
-          <th>String</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(num, index) in points" :key="index">
-          <td>{{ index }}</td>
-          <td>{{ num }}</td>
-          <td>{{ images[index] }}</td>
-        </tr>
-      </tbody>
-    </table>
+       <table>
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>分数</th>
+              <th>图片</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(num, index) in points" :key="index">
+              <td>{{ index }}</td>
+              <td>{{ num }}</td>
+              <td>{{ images[index] }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
   </div>
 

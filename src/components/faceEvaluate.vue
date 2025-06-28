@@ -8,7 +8,7 @@
     const globalStore = useGlobalStore()
 
     // 解构保持响应性
-    const { pageLastName,user_id} = storeToRefs(globalStore)
+    const { user_id} = storeToRefs(globalStore)
     const { changeLastName } = globalStore
 
     const imageSrc = ref(null);
@@ -88,9 +88,6 @@
   </div>
 </div>
 
-  <p>
-    {{ pageLastName }}
-  </p>
 </template>
 
 <style>
