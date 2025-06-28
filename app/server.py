@@ -51,7 +51,9 @@ with app.app_context():
 def face_predict():
     if 'image' not in request.files:
         return jsonify({'check_code':103})
-    file=request.files['image']
+    image=request.files['image']
+    if image.filename == '':
+        return jsonify({'check_code':104})
     user_id=request.form.get('user_id')
     return jsonify({'check_code':520})
 
