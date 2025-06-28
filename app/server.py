@@ -9,6 +9,7 @@ from app.tools import *
 import os
 from werkzeug.utils import secure_filename
 import random
+import time
 """from app.face_ai import get_result"""
 
 
@@ -57,7 +58,8 @@ def face_predict():
     if image.filename == '':
         return jsonify({'check_code':104})
     else:
-        filename=secure_filename(image.filename)
+        timestamp=str(int(time.time()*1000))
+        filename=timestamp+'_'+secure_filename(image.filename)
         image_path=os.path.join(app.config['TEMP_DIR'],filename)
         image.save(image_path)
         image_url=f'http://127.0.0.1:5000/download/{filename}'
