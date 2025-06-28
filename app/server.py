@@ -7,6 +7,7 @@ from app import app
 from app.database import *
 from app.tools import *
 import os
+from werkzeug.utils import secure_filename
 """from app.face_ai import get_result"""
 
 
@@ -54,8 +55,13 @@ def face_predict():
     image=request.files['image']
     if image.filename == '':
         return jsonify({'check_code':104})
-    user_id=request.form.get('user_id')
-    return jsonify({'check_code':520})
+    else:
+        filename=secure_filename(image.filename)
+        image_path=os.path.join(app.config['TEMP_DIR'],filename)
+        image.save(image_path)
+        image_url=f'http://127.0.0.1:5000/download/{filename}'
+        user_id=request.form.get('user_id')
+        return jsonify({'check_code':520})
 
 @app.route('/download/<filename>',methods=['GET'])
 def download(filename):
