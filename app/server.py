@@ -2,7 +2,7 @@
 import atexit
 import shutil
 import tempfile
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,send_from_directory
 from app import app
 from app.database import *
 from app.tools import *
@@ -14,11 +14,11 @@ class Config:
     TEMP_DIR=os.path.join(tempfile.gettempdir(),'image_library_temp')
     STORAGE_MODE='temp'
 os.makedirs(Config.TEMP_DIR,exist_ok=True)
-@atexit.register
-def cleanup():
-    if Config.STORAGE_MODE=='temp' and os.path.exists(Config.TEMP_DIR):
-        shutil.rmtree(Config.TEMP_DIR)
-        print(f"已清理临时目录：{Config.TEMP_DIR}")
+app.config['TEMP_DIR']=Config.TEMP_DIR
+default_icon_origin_path=os.path.join('user_data/icon/default_icon.png')
+default_icon_target_path=os.path.join(app.config['TEMP_DIR'],'default_icon.png')
+shutil.copy(default_icon_origin_path,default_icon_target_path)
+app.config['DEFAULT_ICON']='default_icon.png'
 
 def save_uploaded_file(file_stream,filename):
     file_ext=os.path.splitext(filename)[1] or '.jpg'
@@ -36,6 +36,12 @@ def save_uploaded_file(file_stream,filename):
         if os.path.exists(save_path):
             os.remove(save_path)
         raise
+
+@atexit.register
+def cleanup():
+    if Config.STORAGE_MODE=='temp' and os.path.exists(Config.TEMP_DIR):
+        shutil.rmtree(Config.TEMP_DIR)
+        print(f"已清理临时目录：{Config.TEMP_DIR}")
 
 with app.app_context():
     db.create_all()
@@ -55,11 +61,18 @@ def face_predict():
     calculate_result=get_result(img_path)"""
     return jsonify({'check_code':520})
 
+@app.route('/download/<filename>',methods=['GET'])
+def download(filename):
+    return send_from_directory('','')
+
+@app.route('/upload',methods=['POST'])
+def upload():
+    return jsonify({''})
 
 @app.route('/login',methods=['POST'])
 def login():
-    username=request.form.get('username')
-    password=request.form.get('password')
+    username=request.get_json().get('username')
+    password=request.get_json().get('password')
     result=login_user(username, password)
     if result['check_code']==101:
         return jsonify(result)
@@ -70,8 +83,8 @@ def login():
 
 @app.route('/register',methods=['POST'])
 def register():
-    username=request.form.get('username')
-    password=request.form.get('password')
+    username=request.get_json().get('username')
+    password=request.get_json().get('password')
     result=register_user(username, password)
     if result['check_code']==102:
         return jsonify({'check_code':102})
