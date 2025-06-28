@@ -33,11 +33,14 @@ def register_user(username, password_hash):
     commit_all()
     return {'check_code':520,'nickname':nickname,'user_id':new_user.id}
 
-def upload_photo(user_id, score, category):
-
-    new_photo=Photo(user_id=user_id,score=score,category=category)
-    db.session.add(new_photo)
-    return
+def upload_photo(user_id, score, image_url):
+    exist_user=User.query.get(user_id)
+    if exist_user:
+        new_photo=Photo(user_id=user_id,score=score,image_url=image_url)
+        db.session.add(new_photo)
+        commit_all()
+        return {'check_code':520}
+    return {'check_code':101}
 
 def create_friendship(user_id_1,user_id_2):
     new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2)

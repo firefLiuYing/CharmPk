@@ -8,6 +8,7 @@ from app.database import *
 from app.tools import *
 import os
 from werkzeug.utils import secure_filename
+import random
 """from app.face_ai import get_result"""
 
 
@@ -61,7 +62,12 @@ def face_predict():
         image.save(image_path)
         image_url=f'http://127.0.0.1:5000/download/{filename}'
         user_id=request.form.get('user_id')
-        return jsonify({'check_code':520})
+        random_num=random.random()
+        score=80+10*random_num*random_num
+        result=upload_photo(user_id, score, image_url=image_url)
+        if result['check_code']==520:
+            return jsonify({'check_code':520,'point':score})
+        return jsonify({'check_code':101,'point':score})
 
 @app.route('/download/<filename>',methods=['GET'])
 def download(filename):

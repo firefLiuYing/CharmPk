@@ -26,7 +26,7 @@ class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
-    category = db.Column(db.String(50), nullable=False)
+    image_url = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     def __repr__(self):
         return f'<Photo {self.id}>'
