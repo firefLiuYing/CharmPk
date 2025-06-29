@@ -143,13 +143,15 @@ def load_pk():
 @app.route('/createPkRecords',methods=['POST'])
 def create_pk():
     user_id_1=request.get_json().get('user_id_1')
-    user_id_2=request.get_json().get('User_id_2')
+    user_id_2=request.get_json().get('user_id_2')
     result=database.create_pk(user_id_1, user_id_2)
     return jsonify(result)
 
 @app.route('/loadPkApplication',methods=['POST'])
 def load_pk_application():
-    return jsonify({'check_code':520,'user_icons':[],'nicknames':[],'usernames':[]})
+    user_id=request.get_json().get('user_id')
+    result=database.load_pk_application(user_id)
+    return jsonify(result)
 
 @app.route('/acceptPkApplication',methods=['POST'])
 def accept_pk_application():

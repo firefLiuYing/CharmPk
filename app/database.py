@@ -129,10 +129,28 @@ def load_applications(user_id):
     return {'check_code':520,'user_icon':user_icons,'nickname':nicknames,'user_id':user_ids}
 
 def create_pk(user_id_1,user_id_2):
-    new_pk=Pk(user_id_1,user_id_2)
+    has_pk=Pk.query.filter((Pk.user_id_1==user_id_1)&((Pk.status=='pending')|(Pk.status=='doing'))).all()
+    if has_pk:
+        return {'check_code':107}
+    new_pk=Pk(user_id_1=user_id_1,user_id_2=user_id_2,status='pending')
     db.session.add(new_pk)
     commit_all()
-    return {'check_code':520}
+    return {'check_code':520,'pk_id':new_pk.id}
+
+def load_pk_application(user_id):
+    pks=Pk.query.filter((Pk.user_id_2==user_id)&(Pk.status=='pending'))
+    user_icon=[]
+    nickname=[]
+    user_id=[]
+    pk_id=[]
+    for pk in pks:
+        user=User.query.get(pk.user_id_1)
+        user_icon.append(user.user_icon)
+        nickname.append(user.nickname)
+        user_id.append(user.id)
+        pk_id.append(pk.id)
+    return {'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id,'pk_id':pk_id}
+
 
 def print_all_table():
     users=User.query.all()
