@@ -82,7 +82,7 @@ def accept_friend_apply(user_id_1,user_id_2):
         return {'check_code':106}
     friendship.status='accept'
     commit_all()
-    return {'check_code':520}
+    return {'check_code':520,'status':friendship.status}
 
 def refuse_friend_apply(user_id_1,user_id_2):
     friendship=Friendship.query.filter_by(user_id_1=user_id_1,user_id_2=user_id_2,status='pending').first()
@@ -90,7 +90,7 @@ def refuse_friend_apply(user_id_1,user_id_2):
         return {'check_code':106}
     friendship.status='refuse'
     commit_all()
-    return {'check_code':520}
+    return {'check_code':520,'status':friendship.status}
 
 def load_friends(user_id):
     exist_user=User.query.get(user_id)
