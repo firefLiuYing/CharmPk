@@ -10,6 +10,7 @@ import os
 from werkzeug.utils import secure_filename
 import random
 import time
+from app import database
 """from app.face_ai import get_result"""
 
 
@@ -91,8 +92,10 @@ def load_user_charm_ranking():
 
 @app.route('/searchUser',methods=['POST'])
 def search_user():
-    user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_point':520,'user_icon':user_icon,'nickname':'用户0d00'})
+    nickname=request.get_json().get('nickname')
+    print(nickname)
+    result=database.search_user(nickname)
+    return jsonify(result)
 
 @app.route('/applyForFriends',methods=['POST'])
 def apply_friend():

@@ -48,6 +48,15 @@ def get_photos(user_id):
     urls=[img.image_url for img in photos]
     return {'images':urls,'points':scores}
 
+def search_user(nickname):
+    exist_user=User.query.filter_by(nickname=nickname).first()
+    if exist_user:
+        check_code=520
+        user_icon=exist_user.user_icon
+        user_id=exist_user.id
+        return {'check_code':check_code,'user_icon':user_icon,'user_id':user_id,'nickname':nickname}
+    return {'check_code':101}
+
 def create_friendship(user_id_1,user_id_2):
     new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2)
     db.session.add(new_friendship)
