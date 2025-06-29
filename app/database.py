@@ -76,6 +76,14 @@ def create_friendship(user_id_1,user_id_2):
     commit_all()
     return {'check_code':520}
 
+def accept_friend_apply(user_id_1,user_id_2):
+    friendship=Friendship.query.filter_by(user_id_1=user_id_1,user_id_2=user_id_2,status='pending').first()
+    if not friendship:
+        return {'check_code':106}
+    friendship.status='accept'
+    return {'check_code':520}
+
+
 def load_applications(user_id):
     user=User.query.get(user_id)
     if not user:
