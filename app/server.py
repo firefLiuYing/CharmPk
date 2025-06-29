@@ -165,6 +165,12 @@ def refuse_pk_application():
     result=refuse_pk(pk_id)
     return jsonify(result)
 
+@app.route('/loadCurrentPk',methods=['POST'])
+def load_current_pk():
+    user_id=request.get_json().get('user_id')
+    result=database.load_current_pk(user_id)
+    return result
+
 @app.route('/createNews',methods=['POST'])
 def create_post():
     return jsonify({'check_code': 520})

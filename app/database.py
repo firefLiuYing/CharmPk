@@ -170,6 +170,32 @@ def refuse_pk(pk_id):
     commit_all()
     return {'check_code':520}
 
+def load_current_pk(user_id):
+    pk=Pk.query.filter(
+        ((Pk.status=='doing')&
+        ((Pk.user_id_1==user_id)|(Pk.user_id_2==user_id)))|
+        ((Pk.status=='pending')|Pk.user_id_1==user_id)
+    ).first()
+    if not pk:
+        return {'check_code':109}
+    user_1=User.query.get(pk.user_id_1)
+    user_2=User.query.get(pk.user_id_2)
+    if not user_1:
+        return {'check_code':101}
+    if not user_2:
+        return {'check_code':101}
+    nickname_1=user_1.nickname
+    nickname_2=user_2.nickname
+    image_1=None
+    image_2=None
+    if pk.user_photo_1:
+        photo_1=Photo.query.get(pk.user_photo_1)
+        image_1=photo_1.image_url
+    if pk.user_photo_2:
+        photo_2=Photo.query.get(pk.user_photo_2)
+        image_2=photo_2.image_url
+    return {'check_code':520,'image_1':image_1,'image_2':image_2,'nickname_1':nickname_1,'nickname_2':nickname_2,'pk_id':pk.id}
+
 
 def print_all_table():
     users=User.query.all()
