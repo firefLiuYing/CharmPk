@@ -94,15 +94,19 @@ class Pk(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_id_2 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    user_photo_1=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=False)
-    user_photo_2=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=False)
+    user_photo_1=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=True)
+    user_photo_2=db.Column(db.Integer,db.ForeignKey('photo.id'),nullable=True)
 
     user_1 = db.relationship('User', foreign_keys=[user_id_1])
     user_2 = db.relationship('User', foreign_keys=[user_id_2])
-
+    """共三种状态：
+        pending：申请中
+        accept:接受
+        refuse:拒绝
+    """
     status = db.Column(db.String(20), nullable=False, default='pending')
 
     def __repr__(self):

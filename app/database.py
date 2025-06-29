@@ -129,7 +129,10 @@ def load_applications(user_id):
     return {'check_code':520,'user_icon':user_icons,'nickname':nicknames,'user_id':user_ids}
 
 def create_pk(user_id_1,user_id_2):
-    return
+    new_pk=Pk(user_id_1,user_id_2)
+    db.session.add(new_pk)
+    commit_all()
+    return {'check_code':520}
 
 def print_all_table():
     users=User.query.all()
