@@ -64,12 +64,13 @@ def create_friendship(user_id_1,user_id_2):
     user=User.query.get(user_id_2)
     if not user:
         return {'check_code':101}
-    friendship=Friendship.query.filter((Friendship.user_id_1==user_id_1)&(Friendship.user_id_2==user_id_2)).first()
+    friendship=Friendship.query.filter(((Friendship.user_id_1==user_id_1)&(Friendship.user_id_2==user_id_2))|((Friendship.user_id_1==user_id_2)&(Friendship.user_id_2==user_id_1))).first()
     if friendship:
-        return {'check_code':105}
-    friendship=Friendship.query.filter((Friendship.user_id_1==user_id_2)&(Friendship.user_id_2==user_id_1)).first()
-    if friendship:
-        return {'check_code':106}
+        if (friendship.status=='pending')|(friendship.status=='accept'):
+            return {'check_code':105}
+        friendship.status='pending'
+        commit_all()
+        return {'check_code':520}
     new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2,status='pending')
     db.session.add(new_friendship)
     commit_all()

@@ -35,6 +35,12 @@ class Friendship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_id_2 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    """状态用字符串表示，共三种:
+        pending:申请中
+        accept:同意
+        refuse:拒绝
+    """
     status = db.Column(db.String(20), nullable=False, default='pending')
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
