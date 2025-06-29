@@ -49,7 +49,8 @@ def face_predict():
         image_url=f'http://127.0.0.1:5000/download/{filename}'
         user_id=request.form.get('user_id')
         random_num=random.random()
-        score=80+10*random_num
+        score=60+40*random_num
+        score=round(score,2)
         result=upload_photo(user_id, score, image_url=image_url)
         if result['check_code']==520:
             return jsonify({'check_code':520,'point':score})
