@@ -17,6 +17,7 @@ import {onMounted, ref} from 'vue'
     const images = ref([]);
 
     nouse.value = pageLastName
+
     const loadUserCharmRanking = async () => {
       try {
         const formData = new FormData();
@@ -51,22 +52,28 @@ import {onMounted, ref} from 'vue'
           </div>
       </div>
       <div class="content">
-       <table>
-          <thead>
-            <tr>
-              <th>序号</th>
-              <th>分数</th>
-              <th>图片</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(num, index) in points" :key="index">
-              <td>{{ index }}</td>
-              <td>{{ num }}</td>
-              <td>{{ images[index] }}</td>
-            </tr>
-          </tbody>
-        </table>
+       <p style = "font-size: 40px; text-align: center">颜值评分排名</p>
+          <div v-if="!points.length" class="empty">
+            暂无评分记录
+          </div>
+
+          <div v-else class="request-list">
+            <div
+              v-for="(point, index) in points"
+              :key="point"
+              class="request-item"
+            >
+              <div class="requester-info">
+                <p> 排名：{{index}} </p>
+                <img
+                  :src="images[index]"
+                  alt="头像"
+                  class="avatar"
+                />
+                <span class="username"> : {{ points[index] }}</span>
+              </div>
+            </div>
+        </div>
       </div>
   </div>
 
@@ -74,7 +81,7 @@ import {onMounted, ref} from 'vue'
 <style scoped>
 .right-container{
   display: grid;
-  grid-template-rows: 1fr 7fr;
+  grid-template-rows: minmax(94.5px, 1fr) 7fr;
   grid-template-columns: auto;
   height: 100vh;
   padding: 16px;
@@ -122,31 +129,48 @@ import {onMounted, ref} from 'vue'
   grid-row: 2;
   grid-column: 1;
   text-align: center;
-  background-color: coral;
+  background-color: #ff6900;
   font-size: 64px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+}
+
+.content_1{
+  grid-row: 1;
+
 }
 </style>
 
 <style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
+
+.request-list {
+  margin-top: 20px;
 }
-th, td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid #ddd;
+
+.request-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  border-bottom: 2px solid #eee;
 }
-th {
-  background-color: #f2f2f2;
+
+.requester-info {
+  display: flex;
+  align-items: center;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.avatar {
+  width: 10%;
+  height: 10%;
+  object-fit: cover;
 }
-li {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+
+.username {
+  font-weight: 500;
 }
+
+
 </style>

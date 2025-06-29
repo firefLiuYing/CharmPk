@@ -76,7 +76,7 @@
         </div>
         <img :src="imageSrc" alt="Uploaded Image" v-else style="width: 100%; height: 100%; object-fit: contain;" />
       </div>
-      <div class="response-block" v-if="!point">{{point}}
+      <div class="response-block" v-if="point" style = "font-size: 40px">{{point}}
       </div>
       <button class="evaluate-button" @click="faceEvaluate"> 颜值打分 </button>
       </div>
