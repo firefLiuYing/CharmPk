@@ -40,13 +40,15 @@
     const faceEvaluate = async () => {
       try {
         formData.value.append('user_id', user_id.value);
-        const response = await axios.post('/api/faceEvaluate', formData,{
+        const response = await axios.post('/api/faceEvaluate', formData.value,{
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
         });
         console.log('Response from backend:', response.data);
-              point.value = response.data.point;
+
+
+        point.value = response.data.point;
       } catch (error) {
         console.error('Error uploading image:', error);
       }
@@ -57,29 +59,30 @@
 
 <template>
   <div class="right-container">
-      <div class="top">
-          <div class="top-side-bar">
-              <button class="top-button" @click ="changeLastName('faceEvaluate')">颜值评分</button>
-          </div>
-
-          <div class="top-side-bar">
-              <button class="top-button" @click ="changeLastName('faceRanking')">颜值排名</button>
-          </div>
-      </div>
-
-      <div class="content">
-        <div class="upload-container" @click="triggerInput">
-          <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
-          <div v-if="!imageSrc">Click to upload an image</div>
-          <img :src="imageSrc" alt="Uploaded Image" v-else style="width: 100%; height: 100%; object-fit: contain;" />
+    <div class="top">
+        <div class="top-side-bar">
+            <button class="top-button" @click ="changeLastName('faceEvaluate')">颜值评分</button>
         </div>
-        <div class="response-block" v-if="!point">{{point}}</div>
-        <button class="evaluate-button" @click="faceEvaluate"> 颜值打分 </button>
-      </div>
-  </div>
 
+        <div class="top-side-bar">
+            <button class="top-button" @click ="changeLastName('faceRanking')">颜值排名</button>
+        </div>
+    </div>
+
+    <div class="content">
+      <div class="upload-container" @click="triggerInput">
+        <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
+        <div v-if="!imageSrc">Click to upload an image
+        </div>
+        <img :src="imageSrc" alt="Uploaded Image" v-else style="width: 100%; height: 100%; object-fit: contain;" />
+      </div>
+      <div class="response-block" v-if="!point">{{point}}
+      </div>
+      <button class="evaluate-button" @click="faceEvaluate"> 颜值打分 </button>
+      </div>
+    </div>
   <div>
-  <button @click="showDialog=true">显示弹窗</button>
+
   <div v-if="showDialog" class="dialog-overlay" @click="showDialog = false">
     <div class="dialog" @click.stop>
       <h2>警告</h2>
@@ -121,7 +124,7 @@
   grid-column: 1;
   grid-row: 3;
 
-  width: 10%; /* 按钮宽度占满整个格子 */
+  width: 20%; /* 按钮宽度占满整个格子 */
   height: 40%; /* 按钮高度占满整个格子 */
   text-align: center;
   border: none; /* 去掉边框 */

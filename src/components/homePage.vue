@@ -7,6 +7,12 @@ import faceEvaluate from './faceEvaluate.vue'
 import faceRanking from './faceRanking.vue'
 import { useGlobalStore } from '@/stores/pageStore'
 import AddFriends from "@/components/addFriends.vue";
+import FriendList from "@/components/friendList.vue";
+import ApplicationList from "@/components/applicationList.vue";
+import FacePk from "@/components/facePk.vue";
+import FacePkRecord from "@/components/facePkRecord.vue";
+import FacePkApplication from "@/components/facePkApplication.vue";
+
 
 
 // 获取 store 实例
@@ -36,16 +42,16 @@ const imageStyle = ref({
         </div>
         <div class="bottom-left">
           <div class="left-side-bar">
-            <button class="left-button" @click="changeFirstName(faceEvaluate),changeLastName(faceEvaluate)">颜值评分</button>
+            <button class="left-button" @click="() => { changeFirstName('faceEvaluate'); changeLastName('faceEvaluate'); }">颜值评分</button>
           </div>
           <div class="left-side-bar">
-            <button class="left-button" @click="changeFirstName()">颜值PK</button>
+            <button class="left-button" @click="() => { changeFirstName('facePk'); changeLastName('facePk')}">颜值PK</button>
           </div>
           <div class="left-side-bar">
             <button class="left-button" @click="changeFirstName()">社交空间</button>
           </div>
           <div class="left-side-bar">
-            <button class="left-button" @click="changeFirstName(friends),changeLastName(friendsList)">好友列表</button>
+            <button class="left-button" @click="() => { changeFirstName('friends'); changeLastName('friendList')}">好友列表</button>
           </div>
         </div>
     </div>
@@ -62,10 +68,19 @@ const imageStyle = ref({
           <add-friends/>
         </div>
         <div v-if="pageFirstName === 'friends' && pageLastName === 'friendList'">
-          <add-friends/>
+          <friend-list/>
         </div>
         <div v-if="pageFirstName === 'friends' && pageLastName === 'applicationList'">
-          <add-friends/>
+          <application-list/>
+        </div>
+        <div v-if="pageFirstName === 'facePk' && pageLastName === 'facePk'">
+          <face-pk/>
+        </div>
+        <div v-if="pageFirstName === 'facePk' && pageLastName === 'facePkRecords'">
+          <face-pk-record/>
+        </div>
+        <div v-if="pageFirstName === 'facePk' && pageLastName === 'facePkApplication'">
+          <face-pk-application/>
         </div>
     </div>
 

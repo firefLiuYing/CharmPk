@@ -9,13 +9,13 @@
 
     // 解构保持响应性
     const { user_id,other_user_id} = storeToRefs(globalStore)
-    const { changeLastName,changeFirstName } = globalStore
+    const { changeLastName } = globalStore
     const user_icons = ref([])
     const nicknames = ref([])
     const user_ids = ref([])
     const showApplication = ref(false)
 
-    const loadFriends = async () => {
+    const loadPkApplication = async () => {
       try {
         const formData = new FormData();
         formData.append('user_id', user_id.value);
@@ -40,46 +40,66 @@
       }
     };
 
-    const createPkRecords = async (user_id_2) => {
+    const acceptPkApplication = async (user_id_2) => {
       try {
         const formData = new FormData();
-        formData.append('user_id', user_id.value);
+        formData.append('user_id_1', user_id.value);
         formData.append('user_id_2', user_id_2.value);
-        const response = await axios.post('/api/loadApplication', formData,{
+        const response = await axios.post('/api/acceptApplication', formData,{
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        console.log('Response from backend:', response.data);
         other_user_id.value = user_id_2.value;
-        changeLastName('facePk')
-        changeFirstName('facePk')
+        console.log('Response from backend:', response.data);
+        changeLastName('facePk');
+
 
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     };
 
-    onMounted(loadFriends)
+    const refusePkApplication = async (user_id_2) => {
+      try {
+        const formData = new FormData();
+        formData.append('user_id_1', user_id.value);
+        formData.append('user_id_2', user_id_2.value);
+        const response = await axios.post('/api/refusePkApplication', formData,{
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Response from backend:', response.data);
+        await loadPkApplication();
+
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    };
+
+    onMounted(loadPkApplication);
 </script>
 
 <template>
     <div class="right-container">
       <div class="top">
           <div class="top-side-bar">
-              <button class="top-button" @click ="changeLastName('addFriends')">添加好友</button>
+              <button class="top-button" @click ="changeLastName('facePk')">颜值PK</button>
           </div>
+
           <div class="top-side-bar">
-              <button class="top-button" @click ="changeLastName('applicationList')">申请列表</button>
+              <button class="top-button" @click ="changeLastName('facePkRecords')">PK记录</button>
           </div>
+
           <div class="top-side-bar">
-              <button class="top-button" @click ="changeLastName('friendList')">好友列表</button>
+              <button class="top-button" @click ="changeLastName('facePkApplication')">PK邀请</button>
           </div>
       </div>
       <div class="content">
-          <h2>好友列表</h2>
+          <h2>颜值PK申请列表</h2>
           <div v-if="!user_ids.length" class="empty">
-            暂无好友
+            暂无PK申请
           </div>
 
           <div v-else class="request-list">
@@ -94,17 +114,23 @@
                   alt="头像"
                   class="avatar"
                 />
-                <span class="username">{{ nicknames[index] }}</span>
+                <span class="username">{{ nicknames[index] }}向你发起了PK决斗邀请</span>
               </div>
 
           <div class="action-buttons">
             <button
-              @click="createPkRecords(id)"
+              @click="acceptPkApplication(id)"
               class="accept-btn"
             >
-              <span>发起颜值Pk</span>
+              <span>同意</span>
             </button>
 
+            <button
+              @click="refusePkApplication(id)"
+              class="reject-btn"
+            >
+              <span>拒绝</span>
+            </button>
           </div>
         </div>
       </div>
@@ -223,4 +249,8 @@ button:disabled {
   color: white;
 }
 
+.reject-btn {
+  background-color: #f56c6c;
+  color: white;
+}
 </style>

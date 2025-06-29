@@ -9,6 +9,7 @@ export const useGlobalStore = defineStore('global', () => {
   const nickname = ref('nickname')
   const userIcon = ref(null)
   const user_id = ref(null)
+  const other_user_id = ref(null)
 
   function changeFirstName (name) {
     pageFirstName.value = name
@@ -24,6 +25,7 @@ export const useGlobalStore = defineStore('global', () => {
      nickname,
      userIcon,
      user_id,
+     other_user_id,
 
      changeFirstName,
      changeLastName

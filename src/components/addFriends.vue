@@ -48,7 +48,7 @@
         else{
           nickname_2.value = nickname.value;
           user_icon_2.value = response.data.user_icon;
-          user_id_2.value = response.data.other_user_id;
+          user_id_2.value = response.data.user_id;
           searchResult.value = true;
         }
 

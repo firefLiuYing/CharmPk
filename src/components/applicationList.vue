@@ -30,7 +30,7 @@
         }
         else{
           showApplication.value = true
-          user_ids.value = response.data.user_icon;
+          user_ids.value = response.data.user_id;
           nicknames.value = response.data.nickname;
           user_icons.value = response.data.user_icon;
         }
@@ -44,14 +44,14 @@
       try {
         const formData = new FormData();
         formData.append('user_id_1', user_id.value);
-        formData.append('user_id_2_', user_id_2.value);
+        formData.append('user_id_2', user_id_2.value);
         const response = await axios.post('/api/acceptApplication', formData,{
           headers: {
             'Content-Type': 'application/json',
           },
         });
         console.log('Response from backend:', response.data);
-        loadApplication();
+        await loadApplication();
 
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -62,14 +62,14 @@
       try {
         const formData = new FormData();
         formData.append('user_id_1', user_id.value);
-        formData.append('user_id_2_', user_id_2.value);
+        formData.append('user_id_2', user_id_2.value);
         const response = await axios.post('/api/refuseApplication', formData,{
           headers: {
             'Content-Type': 'application/json',
           },
         });
         console.log('Response from backend:', response.data);
-        loadApplication();
+        await loadApplication();
 
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -106,7 +106,7 @@
             >
               <div class="requester-info">
                 <img
-                  :src="user_icons[index] || defaultAvatar"
+                  :src="user_icons[index]"
                   alt="头像"
                   class="avatar"
                 />
@@ -191,17 +191,7 @@
 </style>
 
 <style scoped>
-.friend-requests-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
 
-.loading, .empty {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-}
 
 .request-list {
   margin-top: 20px;
