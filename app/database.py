@@ -82,7 +82,6 @@ def accept_friend_apply(user_id_1,user_id_2):
         return {'check_code':106}
     friendship.status='accept'
     commit_all()
-    print(friendship.__repr__)
     return {'check_code':520}
 
 def refuse_friend_apply(user_id_1,user_id_2):
@@ -91,8 +90,8 @@ def refuse_friend_apply(user_id_1,user_id_2):
         return {'check_code':106}
     friendship.status='refuse'
     commit_all()
-    print(friendship.__repr__)
     return {'check_code':520}
+
 
 
 def load_applications(user_id):
