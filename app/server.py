@@ -93,7 +93,6 @@ def load_user_charm_ranking():
 @app.route('/searchUser',methods=['POST'])
 def search_user():
     nickname=request.get_json().get('nickname')
-    print(nickname)
     result=database.search_user(nickname)
     return jsonify(result)
 
