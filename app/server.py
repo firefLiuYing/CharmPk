@@ -126,7 +126,9 @@ def refuse_application():
 
 @app.route('/loadFriends',methods=['POST'])
 def load_friends():
-    return jsonify({'check_code':520,'user_icons':[],'nicknames':[],'usernames':[]})
+    user_id=request.get_json().get('user_id')
+    result=database.load_friends(user_id)
+    return jsonify(result)
 
 @app.route('/loadPkRecords',methods=['POST'])
 def load_pk():

@@ -92,6 +92,26 @@ def refuse_friend_apply(user_id_1,user_id_2):
     commit_all()
     return {'check_code':520}
 
+def load_friends(user_id):
+    exist_user=User.query.get(user_id)
+    if not exist_user:
+        return {'check_code':101}
+    friends=Friendship.query.filter((Friendship.user_id_1==user_id)&(Friendship.status=='accept'))
+    user_icons=[]
+    nicknames=[]
+    user_ids=[]
+    for friend in friends:
+        user=User.query.get(friend.user_id_2)
+        user_icons.append(user.user_icon)
+        nicknames.append(user.nickname)
+        user_ids.append(user.id)
+    friends=Friendship.query.filter((Friendship.user_id_2==user_id)&(Friendship.status=='accept'))
+    for friend in friends:
+        user=User.query.get(friend.user_id_1)
+        user_icons.append(user.user_icon)
+        nicknames.append(user.nickname)
+        user_ids.append(user.id)
+    return {'check_code':520,'user_icon':user_icons,'user_id':user_ids,'nickname':nicknames}
 
 
 def load_applications(user_id):
