@@ -196,6 +196,26 @@ def load_current_pk(user_id):
         image_2=photo_2.image_url
     return {'check_code':520,'image_1':image_1,'image_2':image_2,'nickname_1':nickname_1,'nickname_2':nickname_2,'pk_id':pk.id}
 
+def upload_image_to_pk(pk_id,user_id,image_url,score):
+    exist_pk=Pk.query.get(pk_id)
+    if not exist_pk:
+        return {'check_code':108}
+    new_photo=Photo(user_id=user_id,image_url=image_url,score=score)
+    db.session.add(new_photo)
+    commit_all()
+    photo_id=new_photo.id
+    if int(user_id)==int(exist_pk.user_id_1):
+        exist_pk.user_photo_1=photo_id
+        commit_all()
+        return {'check_code':520}
+    elif int(user_id)==int(exist_pk.user_id_2):
+        exist_pk.user_photo_2=photo_id
+        commit_all()
+        return {'check_code': 520}
+    else:
+        print(exist_pk.user_id_1,exist_pk.user_id_2,user_id)
+        return {'check_code':110}
+
 
 def print_all_table():
     users=User.query.all()

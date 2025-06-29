@@ -61,6 +61,26 @@ def face_predict():
             return jsonify({'check_code':520,'point':score})
         return jsonify({'check_code':101,'point':score})
 
+@app.route('/uploadImageToPkRecords',methods=['POST'])
+def upload_image_to_pk():
+    if 'image' not in request.files:
+        return jsonify({'check_code':103})
+    image=request.files['image']
+    if image.filename == '':
+        return jsonify({'check_code':104})
+    timestamp = str(int(time.time() * 1000))
+    filename = timestamp + '_' + secure_filename(image.filename)
+    image_path = os.path.join(app.config['TEMP_DIR'], filename)
+    image.save(image_path)
+    random_num = random.random()
+    score = 60 + 40 * random_num
+    score = round(score, 2)
+    image_url = f'http://127.0.0.1:5000/download/{filename}'
+    pk_id=request.form.get('pk_id')
+    user_id=request.form.get('user_id')
+    result=database.upload_image_to_pk(pk_id=pk_id, user_id=user_id, image_url=image_url, score=score)
+    return jsonify(result)
+
 @app.route('/download/<filename>',methods=['GET'])
 def download(filename):
     if os.path.exists(os.path.join(app.config['TEMP_DIR'],filename)):
