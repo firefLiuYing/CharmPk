@@ -34,6 +34,11 @@ with app.app_context():
     db.create_all()
     print_all_tablename()
 
+@app.route('/log',methods=['GET'])
+def log():
+    print_all_table()
+    return jsonify({'check_code':520})
+
 @app.route('/faceEvaluate',methods=['POST'])
 def face_predict():
     if 'image' not in request.files:

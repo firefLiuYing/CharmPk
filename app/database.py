@@ -113,7 +113,6 @@ def load_friends(user_id):
         user_ids.append(user.id)
     return {'check_code':520,'user_icon':user_icons,'user_id':user_ids,'nickname':nicknames}
 
-
 def load_applications(user_id):
     user=User.query.get(user_id)
     if not user:
@@ -129,24 +128,7 @@ def load_applications(user_id):
         user_ids.append(user.id)
     return {'check_code':520,'user_icon':user_icons,'nickname':nicknames,'user_id':user_ids}
 
-def create_post(user_id,title,content):
-    new_post=Post(user_id=user_id,title=title,content=content)
-    db.session.add(new_post)
-    return
-
-def create_comment(user_id,post_id,content,comment_id=None):
-    new_comment=Comment(user_id=user_id,post_id=post_id,content=content,comment_id=comment_id)
-    db.session.add(new_comment)
-    return
-
-def create_like(user_id,target_type,target_id):
-    new_like=Like(user_id=user_id,target_type=target_type,target_id=target_id)
-    db.session.add(new_like)
-    return
-
-def create_pk(user_id_1,user_id_2,winner_id,user_photo_1,user_photo_2):
-    new_pk=Pk(user_id_1=user_id_1,user_id_2=user_id_2,winner_id=winner_id,user_photo_1=user_photo_1,user_photo_2=user_photo_2)
-    db.session.add(new_pk)
+def create_pk(user_id_1,user_id_2):
     return
 
 def print_all_table():
