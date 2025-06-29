@@ -103,6 +103,12 @@ def apply_friend():
     result=create_friendship(user_id_1, user_id_2)
     return jsonify(result)
 
+@app.route('/loadApplication',methods=['POST'])
+def load_applications():
+    user_id=request.get_json().get('user_id')
+    result=database.load_applications(user_id)
+    return result
+
 @app.route('/acceptApplication',methods=['POST'])
 def accept_application():
     return jsonify({'check_code':520})

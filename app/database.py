@@ -75,6 +75,21 @@ def create_friendship(user_id_1,user_id_2):
     commit_all()
     return {'check_code':520}
 
+def load_applications(user_id):
+    user=User.query.get(user_id)
+    if not user:
+        return {'check_code':101}
+    friendships=Friendship.query.filter_by(user_id_2=user_id,status='pending').all()
+    user_icons=[]
+    nicknames=[]
+    user_ids=[]
+    for friendship in friendships:
+        user=User.query.get(friendship.user_id_1)
+        user_icons.append(user.user_icon)
+        nicknames.append(user.nickname)
+        user_ids.append(user.id)
+    return {'check_code':520,'user_icon':user_icons,'nickname':nicknames,'user_id':user_ids}
+
 def create_post(user_id,title,content):
     new_post=Post(user_id=user_id,title=title,content=content)
     db.session.add(new_post)
