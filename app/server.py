@@ -155,11 +155,15 @@ def load_pk_application():
 
 @app.route('/acceptPkApplication',methods=['POST'])
 def accept_pk_application():
-    return jsonify({'check_code':520})
+    pk_id=request.get_json().get('pk_id')
+    result=accept_pk(pk_id)
+    return jsonify(result)
 
 @app.route('/refusePkApplication',methods=['POST'])
 def refuse_pk_application():
-    return jsonify({'check_code': 520})
+    pk_id=request.get_json().get('pk_id')
+    result=refuse_pk(pk_id)
+    return jsonify(result)
 
 @app.route('/createNews',methods=['POST'])
 def create_post():

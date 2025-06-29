@@ -105,7 +105,7 @@ class Pk(db.Model):
     """共三种状态：
         pending:申请中
         doing:正在pk
-        accept:接受
+        end:比完了
         refuse:拒绝
     """
     status = db.Column(db.String(20), nullable=False, default='pending')

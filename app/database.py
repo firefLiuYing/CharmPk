@@ -129,7 +129,10 @@ def load_applications(user_id):
     return {'check_code':520,'user_icon':user_icons,'nickname':nicknames,'user_id':user_ids}
 
 def create_pk(user_id_1,user_id_2):
-    has_pk=Pk.query.filter((Pk.user_id_1==user_id_1)&((Pk.status=='pending')|(Pk.status=='doing'))).all()
+    has_pk=Pk.query.filter(
+        ((Pk.user_id_1==user_id_1)&((Pk.status=='pending')|(Pk.status=='doing')))
+        |((Pk.user_id_2==user_id_1)&(Pk.status=='doing'))
+    ).all()
     if has_pk:
         return {'check_code':107}
     new_pk=Pk(user_id_1=user_id_1,user_id_2=user_id_2,status='pending')
@@ -150,6 +153,22 @@ def load_pk_application(user_id):
         user_id.append(user.id)
         pk_id.append(pk.id)
     return {'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id,'pk_id':pk_id}
+
+def accept_pk(pk_id):
+    exist_pk=Pk.query.get(pk_id)
+    if not exist_pk:
+        return {'check_code':108}
+    exist_pk.status='doing'
+    commit_all()
+    return {'check_code':520}
+
+def refuse_pk(pk_id):
+    exist_pk=Pk.query.get(pk_id)
+    if not exist_pk:
+        return {'check_code':108}
+    exist_pk.status='refuse'
+    commit_all()
+    return {'check_code':520}
 
 
 def print_all_table():
