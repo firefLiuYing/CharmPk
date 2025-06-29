@@ -58,9 +58,22 @@ def search_user(nickname):
     return {'check_code':101}
 
 def create_friendship(user_id_1,user_id_2):
-    new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2)
+    user=User.query.get(user_id_1)
+    if not user:
+        return {'check_code':101}
+    user=User.query.get(user_id_2)
+    if not user:
+        return {'check_code':101}
+    friendship=Friendship.query.filter((Friendship.user_id_1==user_id_1)&(Friendship.user_id_2==user_id_2)).first()
+    if friendship:
+        return {'check_code':105}
+    friendship=Friendship.query.filter((Friendship.user_id_1==user_id_2)&(Friendship.user_id_2==user_id_1)).first()
+    if friendship:
+        return {'check_code':106}
+    new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2,status='pending')
     db.session.add(new_friendship)
-    return
+    commit_all()
+    return {'check_code':520}
 
 def create_post(user_id,title,content):
     new_post=Post(user_id=user_id,title=title,content=content)

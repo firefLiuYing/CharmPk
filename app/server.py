@@ -98,8 +98,10 @@ def search_user():
 
 @app.route('/applyForFriends',methods=['POST'])
 def apply_friend():
-    user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':520,'user_icon':user_icon,'nickname':'用户0d000721'})
+    user_id_1=request.get_json().get('user_id_1')
+    user_id_2=request.get_json().get('user_id_2')
+    result=create_friendship(user_id_1, user_id_2)
+    return jsonify(result)
 
 @app.route('/acceptApplication',methods=['POST'])
 def accept_application():
