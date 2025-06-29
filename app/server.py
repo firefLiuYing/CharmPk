@@ -119,7 +119,10 @@ def accept_application():
 
 @app.route('/refuseApplication',methods=['POST'])
 def refuse_application():
-    return jsonify({'check_code':520})
+    user_id_1=request.get_json().get('user_id_1')
+    user_id_2=request.get_json().get('user_id_2')
+    result=refuse_friend_apply(user_id_1, user_id_2)
+    return jsonify(result)
 
 @app.route('/loadFriends',methods=['POST'])
 def load_friends():

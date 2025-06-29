@@ -48,7 +48,7 @@ class Friendship(db.Model):
     user_2 = db.relationship('User', foreign_keys=[user_id_2])
 
     def __repr__(self):
-        return f'<Friendship {self.user_1.nickname} <-> {self.user_2.nickname}>'
+        return f'<Friendship {self.user_1.nickname} <-> {self.user_2.nickname} : {self.status}>'
 
 # 帖子模型
 class Post(db.Model):
