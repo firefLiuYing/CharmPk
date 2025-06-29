@@ -23,23 +23,6 @@ default_icon_target_path=os.path.join(app.config['TEMP_DIR'],'default_icon.png')
 shutil.copy(default_icon_origin_path,default_icon_target_path)
 app.config['DEFAULT_ICON']='default_icon.png'
 
-def save_uploaded_file(file_stream,filename):
-    file_ext=os.path.splitext(filename)[1] or '.jpg'
-    safe_filename=f"{os.urandom(8).hex()}{file_ext}"
-    save_path=os.path.join(Config.TEMP_DIR,safe_filename)
-    try:
-        img=Image.open(file_stream)
-        img.verify()
-        file_stream.seek(0)
-        with open(save_path,'wb') as f:
-            f.write(file_stream.read())
-        return save_path
-    except Exception as e:
-        print(f"文件保存失败：{str(e)}")
-        if os.path.exists(save_path):
-            os.remove(save_path)
-        raise
-
 @atexit.register
 def cleanup():
     if Config.STORAGE_MODE=='temp' and os.path.exists(Config.TEMP_DIR):
@@ -102,7 +85,9 @@ def register():
 
 @app.route('/loadUserCharmRanking',methods=['POST'])
 def load_user_charm_ranking():
-    return jsonify({'check_code':520,'images':[],'points':[]})
+    user_id=request.get_json().get('user_id')
+    result=get_photos(user_id)
+    return jsonify({'check_code':520,'images':result['images'],'points':result['points']})
 
 @app.route('/searchUser',methods=['POST'])
 def search_user():

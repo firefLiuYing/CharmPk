@@ -42,6 +42,12 @@ def upload_photo(user_id, score, image_url):
         return {'check_code':520}
     return {'check_code':101}
 
+def get_photos(user_id):
+    photos=Photo.query.filter_by(user_id=user_id).order_by(Photo.score.desc()).all()
+    scores=[img.score for img in photos]
+    urls=[img.image_url for img in photos]
+    return {'images':urls,'points':scores}
+
 def create_friendship(user_id_1,user_id_2):
     new_friendship=Friendship(user_id_1=user_id_1,user_id_2=user_id_2)
     db.session.add(new_friendship)
