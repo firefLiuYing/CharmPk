@@ -172,9 +172,9 @@ def refuse_pk(pk_id):
 
 def load_current_pk(user_id):
     pk=Pk.query.filter(
-        ((Pk.status=='doing')&
-        ((Pk.user_id_1==user_id)|(Pk.user_id_2==user_id)))|
-        ((Pk.status=='pending')|Pk.user_id_1==user_id)
+        ((Pk.status=='doing')&(Pk.user_id_1==user_id))|
+        ((Pk.status=='doing')&(Pk.user_id_2==user_id))|
+        ((Pk.status=='pending')&(Pk.user_id_1==user_id))
     ).first()
     if not pk:
         return {'check_code':109}
@@ -216,6 +216,19 @@ def upload_image_to_pk(pk_id,user_id,image_url,score):
         print(exist_pk.user_id_1,exist_pk.user_id_2,user_id)
         return {'check_code':110}
 
+def handle_pk(pk_id):
+    exist_pk=Pk.query.get(pk_id)
+    if not exist_pk:
+        return {'check_code':108}
+    photo_1=Photo.query.get(exist_pk.user_photo_1)
+    if not photo_1:
+        return {'check_code':111}
+    photo_2=Photo.query.get(exist_pk.user_photo_2)
+    if not photo_2:
+        return {'check_code':111}
+    exist_pk.status='end'
+    commit_all()
+    return {'check_code':520,'point_1':photo_1.score,'point_2':photo_2.score}
 
 def print_all_table():
     users=User.query.all()

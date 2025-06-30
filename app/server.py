@@ -191,6 +191,12 @@ def load_current_pk():
     result=database.load_current_pk(user_id)
     return result
 
+@app.route('/facePk',methods=['POST'])
+def handle_pk():
+    pk_id=request.get_json().get('pk_id')
+    result=database.handle_pk(pk_id)
+    return jsonify(result)
+
 @app.route('/createNews',methods=['POST'])
 def create_post():
     return jsonify({'check_code': 520})
