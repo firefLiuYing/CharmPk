@@ -160,7 +160,7 @@ def accept_pk(pk_id):
         return {'check_code':108}
     exist_pk.status='doing'
     commit_all()
-    return {'check_code':520}
+    return {'check_code':520,'user_id_1':exist_pk.user_id_1,'user_id_2':exist_pk.user_id_2}
 
 def refuse_pk(pk_id):
     exist_pk=Pk.query.get(pk_id)
@@ -168,7 +168,7 @@ def refuse_pk(pk_id):
         return {'check_code':108}
     exist_pk.status='refuse'
     commit_all()
-    return {'check_code':520}
+    return {'check_code':520,'user_id_1':exist_pk.user_id_1,'user_id_2':exist_pk.user_id_2}
 
 def load_current_pk(user_id):
     pk=Pk.query.filter(
