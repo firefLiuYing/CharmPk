@@ -201,3 +201,4 @@ def handle_pk():
 def create_post():
     return jsonify({'check_code': 520})
 
+
