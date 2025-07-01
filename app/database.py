@@ -154,6 +154,28 @@ def load_pk_application(user_id):
         pk_id.append(pk.id)
     return {'check_code':520,'user_icon':user_icon,'nickname':nickname,'user_id':user_id,'pk_id':pk_id}
 
+def load_pk_records(user_id):
+    pks=Pk.query.filter(((Pk.user_id_2==user_id)|(Pk.user_id_1==user_id))&(Pk.status=='end'))
+    image_1=[]
+    nickname_1=[]
+    point_1=[]
+    image_2=[]
+    nickname_2=[]
+    point_2=[]
+    for pk in pks:
+        user_1=User.query.get(pk.user_id_1)
+        user_2=User.query.get(pk.user_id_2)
+        nickname_1.append(user_1.nickname)
+        nickname_2.append(user_2.nickname)
+        photo_1=Photo.query.get(pk.user_photo_1)
+        photo_2=Photo.query.get(pk.user_photo_2)
+        point_1.append(photo_1.score)
+        point_2.append(photo_2.score)
+        image_1.append(photo_1.image_url)
+        image_2.append(photo_2.image_url)
+    return {'check_code':520,'image_1':image_1,'image_2':image_2,'point_1':point_1,'point_2':point_2,'nickname_1':nickname_1,'nickname_2':nickname_2}
+
+
 def accept_pk(pk_id):
     exist_pk=Pk.query.get(pk_id)
     if not exist_pk:

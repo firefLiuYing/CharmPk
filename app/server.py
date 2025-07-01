@@ -157,43 +157,68 @@ def load_friends():
 
 @app.route('/loadPkRecords',methods=['POST'])
 def load_pk():
-    user_icon = process_image('user_data/icon/default_icon.png')
-    return jsonify({'check_code':999,'user_icon_1':user_icon,'nickname_1':'用户0d00','user_icon_2':user_icon,'nickname_2':'用户0721'})
+    user_id=request.get_json().get('user_id')
+    if not user_id:
+        return {'check_code':999}
+    print(user_id)
+    result=load_pk_records(user_id)
+    return jsonify(result)
 
 @app.route('/createPkRecords',methods=['POST'])
 def create_pk():
     user_id_1=request.get_json().get('user_id_1')
     user_id_2=request.get_json().get('user_id_2')
+    if not user_id_1:
+        return {'check_code':999}
+    print(user_id_1)
+    if not user_id_2:
+        return {'check_code':999}
+    print(user_id_2)
     result=database.create_pk(user_id_1, user_id_2)
     return jsonify(result)
 
 @app.route('/loadPkApplication',methods=['POST'])
 def load_pk_application():
     user_id=request.get_json().get('user_id')
+    if not user_id:
+        return {'check_code':999}
+    print(user_id)
     result=database.load_pk_application(user_id)
     return jsonify(result)
 
 @app.route('/acceptPkApplication',methods=['POST'])
 def accept_pk_application():
     pk_id=request.get_json().get('pk_id')
+    if not pk_id:
+        return {'check_code':999}
+    print(pk_id)
     result=accept_pk(pk_id)
     return jsonify(result)
 
 @app.route('/refusePkApplication',methods=['POST'])
 def refuse_pk_application():
     pk_id=request.get_json().get('pk_id')
+    if not pk_id:
+        return {'check_code': 999}
+    print(pk_id)
     result=refuse_pk(pk_id)
     return jsonify(result)
 
 @app.route('/loadCurrentPk',methods=['POST'])
 def load_current_pk():
     user_id=request.get_json().get('user_id')
+    if not user_id:
+        return {'check_code': 999}
+    print(user_id)
     result=database.load_current_pk(user_id)
     return result
 
 @app.route('/facePk',methods=['POST'])
 def handle_pk():
     pk_id=request.get_json().get('pk_id')
+    if not pk_id:
+        return {'check_code': 999}
+    print(pk_id)
     result=database.handle_pk(pk_id)
     return jsonify(result)
 
